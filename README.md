@@ -13,7 +13,7 @@ To install the RELIC toolkit, download the zip from GitHub, extract it to a dire
 	
 	$python setup.py install
 	
-Alternately, you can install it with pip. If you don't have numpy installed, first install it with
+Alternatively, you can install it with pip. If you don't have numpy installed, first install it with
 
     $pip install numpy
     
