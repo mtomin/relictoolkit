@@ -9,7 +9,7 @@ When publishing results obtained using RELIC please cite this publication:
 (to be added)
 
 ## Installation
-To install the RELIC toolkit, download the .tar.gz, extract it to a directory of your choice and run:
+To install the RELIC toolkit, download the zip from GitHub, extract it to a directory of your choice and run:
 	
 	$python setup.py install
 
