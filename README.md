@@ -52,7 +52,7 @@ In addition to the built-in GUI, calculation and plotting scripts can be run as 
 In this case, it is necessary to manually create the config.ini or config_plot.ini files containing the calculation/plotting parameters.
 
 ## Quick start
-The examples folder contains a short simulation of a peptide comprised of 15 amino acid residues.
+The examples folder contains a short simulation of a peptide comprised of 15 amino acid residues (HRERFLADKSAPLCG).
 This tutorial will go through calculating interactions between the first (residues 1-7) and second (residues 8-15) half of the protein.
 #### Calculation
 In the Calculate tab navigate to the topology and trajectory files located in the relictoolkit/examples folder. Set the location of the output file and make sure the filetype "Amber binary trajectory (.ncdf)" is selected.
@@ -67,6 +67,8 @@ Enter the desired number of cores and hit run. The calculation time should not e
 #### Plotting
 Upon selecting the output file obtained in the previous part of the tutorial, the settings pane appears. The default settings can be used (plot against time, include all frames and all residues). After hitting run, the graph is created and automatically opened.
 Graph can be further customized using Plotly's [Chart studio](https://plot.ly/online-chart-maker/) or exported to png file using the action menu bar in the upper right corner.
+![tutorial](examples/tutorial_plot.png)
+It can be observed that residues Lys3 and Glu99 contribute most to the interactions between the first and the second half of the peptide.
 
 ## License
 RELIC is distributed under the [CC-BY](https://creativecommons.org/licenses/by/4.0/) license.
