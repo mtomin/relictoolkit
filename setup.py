@@ -19,7 +19,7 @@ class PyTest(TestCommand):
         errno = pytest.main(self.test_args)
         sys.exit(errno)
 
-with open('README.rst') as f:
+with open('README.md') as f:
     readme = f.read()
 
 with open('requirements.txt') as f:
