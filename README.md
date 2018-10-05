@@ -38,7 +38,7 @@ The installation can be tested by running:
 `$python setup.py test`
 which checks if all the core modules are working properly
 
-####Testing dependencies:
+#### Testing dependencies:
 - pytest
 - pytest-cov
 - mock
