@@ -1,0 +1,15 @@
+[files]
+filetype = 
+output = output.dat
+trajectories = 
+topology = 
+
+[parameters]
+mask2 = 
+ncores = 1
+indi = 4
+mask1 = 
+stride = 1000
+cutoff = 5
+vdw = False
+dt = 1

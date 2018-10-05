@@ -1,0 +1,15 @@
+Calculation started at 2018-10-02 10:21
+
+---------------Input overview---------------
+Topology:      /testfolder/testtopology.prmtop                                                 
+Trajectories:
+               /testfolder/testtrajectory.xcrd                                                 
+Data written to: output.dat
+Mask1: resid 1
+Mask2: resid 2
+Stride not specified; a default value of 1000 used instead
+Internal dielectric constant not specified; using a default value of 4
+Treatment of van der Waals interactions not specified; will not calculate
+Number of cores not specified; using 1 core
+--------------------------------------------
+

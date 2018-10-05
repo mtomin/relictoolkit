@@ -1,0 +1,6 @@
+include requirements.txt
+include relictoolkit/uff.parm
+include relictoolkit/config_defaults.dft
+include pytest.ini
+include tests/data/*
+include examples/*

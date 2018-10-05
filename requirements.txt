@@ -1,0 +1,13 @@
+setuptools>=40.0.0
+six==1.11.0
+requests==2.19.1
+gsd==1.4.0
+MDAnalysis==0.18.0
+decorator==4.3.0
+plotly==3.2.1
+pytz==2018.5
+traitlets==4.3.2
+validators==0.12.2
+future==0.16.0
+configparser
+duecredit
