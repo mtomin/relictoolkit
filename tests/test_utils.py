@@ -4,7 +4,6 @@ from __future__ import division
 from __future__ import absolute_import
 from builtins import open
 from future import standard_library
-# import relictoolkit
 import relictoolkit.utils as u
 import relictoolkit.calculation as p
 import MDAnalysis

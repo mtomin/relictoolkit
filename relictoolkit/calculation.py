@@ -69,11 +69,13 @@ def process_trajectory(topology, trajlist, dt, step, ncores, mask1, mask2, exten
         topology : str
             Topology file (or standalone format)
         trajlist : list of str
-            filenames of trajectory files
+            Filenames of trajectory files
+        dt: int
+            Timestep used in MD simulations
         step : int
-            step between two sampled trajectory frames
+            Step between two sampled trajectory frames
         ncores : int
-            number of CPU cores
+            Number of CPU cores
         mask1 : str
             Selection containing the atoms in the first segment of interest
         mask2 : str
@@ -187,7 +189,7 @@ def perform_analysis(config_filename='config.ini'):
 
 
 def main(config_filename='config.ini'):
-    """Time the calculation and finalize the log file
+    """Time the calculation and finalize the log file.
     """
 
     start_time = time.time()

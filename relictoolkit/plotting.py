@@ -4,7 +4,6 @@ from __future__ import division
 from __future__ import absolute_import
 from builtins import open
 from builtins import int
-from builtins import range
 from builtins import dict
 from future import standard_library
 import plotly.offline
