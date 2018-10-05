@@ -1,4 +1,3 @@
-# Ignore warnings due to multiple warnings regarding numpy in dependencies etc.
 import sys
 from setuptools import setup, find_packages
 from setuptools.command.test import test as TestCommand
