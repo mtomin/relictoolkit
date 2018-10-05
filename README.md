@@ -6,12 +6,11 @@ Tracking the evolution of electrostatic interactions over the simulation time al
 
 ## Citing RELIC
 When publishing results obtained using RELIC please cite this publication:
-<publication>
+(to be added)
 
 ## Installation
-The installation can be tested by running:
+To install the RELIC toolkit, download the .tar.gz, extract it to a directory of your choice and run:
 `$python setup.py install`
-which checks if all the core modules are working properly
 
 ### Requirements
 * Linux
@@ -34,9 +33,12 @@ which checks if all the core modules are working properly
 - [configparser](https://pypi.org/project/configparser/)
 - [duecredit](https://pypi.org/project/duecredit/)
 
-# Testing
+## Testing
+The installation can be tested by running:
 `$python setup.py test`
-Testing dependencies:
+which checks if all the core modules are working properly
+
+####Testing dependencies:
 - pytest
 - pytest-cov
 - mock
