@@ -27,7 +27,7 @@ with open('requirements.txt') as f:
     required = f.read().splitlines()
 
 setup(
-    name='relictoolkit_1',
+    name='relictoolkit',
     version='0.9',
     setup_requires=['numpy',
                     'matplotlib==1.5.2'],
