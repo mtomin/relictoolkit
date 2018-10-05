@@ -12,6 +12,14 @@ When publishing results obtained using RELIC please cite this publication:
 To install the RELIC toolkit, download the zip from GitHub, extract it to a directory of your choice and run:
 	
 	$python setup.py install
+	
+Alternately, you can install it with pip. If you don't have numpy installed, first install it with
+
+    $pip install numpy
+    
+And then install RELIC toolkit with
+
+    $pip install git+https://github.com/mtomin/relictoolkit.git
 
 ### Requirements
 * Linux
