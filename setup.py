@@ -27,11 +27,10 @@ with open('requirements.txt') as f:
     required = f.read().splitlines()
 
 setup(
-    name='relictoolkit',
+    name='relictoolkit_1',
     version='0.9',
     setup_requires=['numpy',
-                    'matplotlib==1.5.2',
-                    ],
+                    'matplotlib==1.5.2'],
     packages=find_packages(),
     zip_safe=True,
     scripts=[],
@@ -61,7 +60,7 @@ setup(
         'test': PyTest,
     },
 
-    url="www.irb.hr",
+    #url='RELIC github, https://github.com/mtomin/relictoolkit',
     license="CC BY 4.0",
     author="Marko Tomin",
     author_email="marko.tomin@irb.hr",
