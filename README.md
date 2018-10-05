@@ -10,7 +10,7 @@ When publishing results obtained using RELIC please cite this publication:
 
 ## Installation
 To install the RELIC toolkit, download the .tar.gz, extract it to a directory of your choice and run:
-`$python setup.py install`
+	$python setup.py install
 
 ### Requirements
 * Linux
@@ -35,7 +35,7 @@ To install the RELIC toolkit, download the .tar.gz, extract it to a directory of
 
 ## Testing
 The installation can be tested by running:
-`$python setup.py test`
+	$python setup.py test
 which checks if all the core modules are working properly
 
 #### Testing dependencies:
@@ -46,11 +46,11 @@ which checks if all the core modules are working properly
 ## Usage
 The `setup.py` script creates the executable file in the /bin directory and the program can be run with:
 
-`$relictoolkit`
+	$relictoolkit
 
 In addition to the built-in GUI, calculation and plotting scripts can be run as standalone scripts:
-`$python calculation.py path/to/config/file`
-`$python plotting.py path/to/config/file`
+	$python calculation.py path/to/config/file
+	$python plotting.py path/to/config/file
 In this case, it is necessary to manually create the config.ini or config_plot.ini files containing the calculation/plotting parameters.
 
 ## Quick start
@@ -59,13 +59,13 @@ This tutorial will go through calculating interactions between the first (residu
 #### Calculation
 In the Calculate tab navigate to the topology and trajectory files located in the relictoolkit/examples folder. Set the location of the output file and make sure the filetype "Amber binary trajectory (.ncdf)" is selected.
 Mask1 and Mask2 define the regions of the studied system. In our case, Mask1 contains residues 1 to 7, whereas Mask2 contains residues 8-15. RELIC uses the [MDAnalysis selection syntax](https://www.mdanalysis.org/docs/documentation_pages/selections.html), so to select appropriate residues enter:
-`Mask1: resid 1:7`
-`Mask2: resid 8:15`
+	Mask1: resid 1:7
+	Mask2: resid 8:15
 
 If left empty, distance cutoff defaults to 5 &#197;, internal dielectric constant defaults to 4, stride defaults to 1000 and timestep to 1 fs. In this example, we will use a stride of 500 to generate enough data for a decent plot later. A timestep used in the simulations was 2 fs. The interface should now look like this:
 ![tutorial](examples/tutorialwindow.png)
 Enter the desired number of cores and hit run. The calculation time should not exceed 2 minutes with a single core. The process can be tracked using the logfile:
-`$tail relic_logfile.log`
+	$tail relic_logfile.log
 #### Plotting
 Upon selecting the output file obtained in the previous part of the tutorial, the settings pane appears. The default settings can be used (plot against time, include all frames and all residues). After hitting run, the graph is created and automatically opened.
 Graph can be further customized using Plotly's [Chart studio](https://plot.ly/online-chart-maker/) or exported to png file using the action menu bar in the upper right corner.
