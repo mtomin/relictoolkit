@@ -69,7 +69,9 @@ Mask1 and Mask2 define the regions of the studied system. In our case, Mask1 con
 	Mask2: resid 8:15
 
 If left empty, distance cutoff defaults to 5 &#197;, internal dielectric constant defaults to 4, stride defaults to 1000 and timestep to 1 fs. In this example, we will use a stride of 500 to generate enough data for a decent plot later. A timestep used in the simulations was 2 fs. The interface should now look like this:
+
 ![tutorial](examples/tutorialwindow.png)
+
 Enter the desired number of cores and hit run. The calculation time should not exceed 2 minutes with a single core. The process can be tracked using the logfile:
 
 	$tail relic_logfile.log
@@ -77,7 +79,9 @@ Enter the desired number of cores and hit run. The calculation time should not e
 #### Plotting
 Upon selecting the output file obtained in the previous part of the tutorial, the settings pane appears. The default settings can be used (plot against time, include all frames and all residues). After hitting run, the graph is created and automatically opened.
 Graph can be further customized using Plotly's [Chart studio](https://plot.ly/online-chart-maker/) or exported to png file using the action menu bar in the upper right corner.
+
 ![tutorial](examples/tutorial_plot.png)
+
 It can be observed that residues Lys3 and Glu99 contribute most to the interactions between the first and the second half of the peptide.
 
 ## License
