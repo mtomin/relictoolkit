@@ -106,10 +106,6 @@ def process_trajectory(topology, trajlist, dt, step, ncores, mask1, mask2, core)
                 partial_traj['startframe']//step + 1, (partial_traj['endframe'] -
                                                        partial_traj['startframe'] - 1) // step + 1))
 
-        # Account for PBC
-        structure.positions = \
-            mda.lib.distances.apply_PBC(structure.positions, box=structure.dimensions, backend='OpenMP')
-
         # Calculate interactions for frame
         u.process_frame(domain1, domain2, output, structure.frame)
     output.close()
@@ -187,16 +183,24 @@ def perform_analysis(config_filename='config.ini'):
             os.remove(partial_output)
 
 
+def timeit(program):
+    """Time the function and append the runtime to logfile
+    """
+    def wrapper(*args):
+        start_time = time.time()
+        program(*args)
+        logfile = open('relic_logfile.log', 'a+')
+        logfile.write('\nCalculation finished successfully\n')
+        logfile.write("Total calculation time: %s seconds" % (time.time() - start_time))
+        logfile.close()
+    return wrapper
+
+
+@timeit
 def main(config_filename='config.ini'):
     """Time the calculation and finalize the log file.
     """
-
-    start_time = time.time()
     perform_analysis(config_filename)
-    logfile = open('relic_logfile.log', 'a+')
-    logfile.write('\nCalculation finished successfully\n')
-    logfile.write("Total calculation time: %s seconds" % (time.time() - start_time))
-    logfile.close()
 
 
 if __name__ == "__main__":
