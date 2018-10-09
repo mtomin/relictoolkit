@@ -18,7 +18,7 @@ import pkg_resources
 standard_library.install_aliases()
 
 
-def vdw_energy(atom1, atom2):
+def vdw_energy(atom1, atom2, box_dimensions):
     """Calculate van der Waals energy.
     Parameters
     ----------
@@ -36,7 +36,7 @@ def vdw_energy(atom1, atom2):
     mixed_lj_term = np.sqrt(atom1.lj_energy*atom2.lj_energy)
     vdw_eq_radius = np.sqrt(atom1.vdw_radius*atom2.vdw_radius)
     r = MDAnalysis.lib.distances.calc_bonds(atom1.position.reshape(-1, 3),
-                                            atom2.position.reshape(-1, 3))[0]
+                                            atom2.position.reshape(-1, 3), box_dimensions)[0]
     evdw = 4.184 * mixed_lj_term * (-2*(np.power(vdw_eq_radius/r, 6) + np.power(vdw_eq_radius/r, 12)))
     return evdw
 
@@ -312,7 +312,7 @@ def load_partial_traj(input_system, step, ncores, core):
     return partial_traj_info
 
 
-def electrostatic_energy(atom1, atom2):
+def electrostatic_energy(atom1, atom2, box_dimensions):
     """Calculate electrostatic interactios within a cutoff distance.
 
     Parameters
@@ -321,6 +321,8 @@ def electrostatic_energy(atom1, atom2):
         First atom
     atom2: MDAnalysis.core.groups.Atom
         Second atom
+    box_dimensions: numpy.ndarray
+        Dimensions of the system box (for PBC imaging)
 
     Returns
     -------
@@ -330,7 +332,7 @@ def electrostatic_energy(atom1, atom2):
 
     indiel = float(load_from_config('parameters', 'indi')[0])
     interatom_distance = MDAnalysis.lib.distances.calc_bonds(atom1.position.reshape(-1, 3),
-                                                             atom2.position.reshape(-1, 3))[0]
+                                                             atom2.position.reshape(-1, 3), box=box_dimensions)[0]
     eelec = 1389 * (1/(4*pi*indiel))*(atom1.charge * atom2.charge) / interatom_distance  # kJ/mol
     return eelec  # converts to kJ/mol
 
@@ -367,9 +369,9 @@ def interdomain_interactions(domain1, domain2, frame_number):
                 if residue != neighbor:
                     for residue_atom in residue.atoms:
                         for neighbor_atom in neighbor.atoms:
-                            eelec += electrostatic_energy(residue_atom, neighbor_atom)
+                            eelec += electrostatic_energy(residue_atom, neighbor_atom, domain1.dimensions)
                             if calculate_vdw:
-                                evdw += vdw_energy(residue_atom, neighbor_atom)
+                                evdw += vdw_energy(residue_atom, neighbor_atom, domain1.dimensions)
             domain_interactions.append('{:<10d} {:<10d} {:>10.5f} {:>10.5f} {:>10.5f}'.format(
                 frame_number, residue.resid, eelec, evdw, eelec+evdw))
     return domain_interactions

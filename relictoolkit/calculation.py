@@ -60,7 +60,7 @@ def add_lj_parameters(system):
     system.add_TopologyAttr('vdw_radius', values=np.array(vdw_radii))
 
 
-def process_trajectory(topology, trajlist, dt, step, ncores, mask1, mask2, extension, core):
+def process_trajectory(topology, trajlist, dt, step, ncores, mask1, mask2, core):
     """Iterates through partial trajectory frames and calculates interactions. Supports parallel processing by loading
     ncores trajectory segments.
 
@@ -80,8 +80,6 @@ def process_trajectory(topology, trajlist, dt, step, ncores, mask1, mask2, exten
             Selection containing the atoms in the first segment of interest
         mask2 : str
             Selection containing the atoms in the second segment of interest
-        extension : str
-            Extension of the trajectory file compatible with the MDAnalysis naming
         core : int
             CPU core used
     """
@@ -105,7 +103,12 @@ def process_trajectory(topology, trajlist, dt, step, ncores, mask1, mask2, exten
         with open('relic_logfile.log', 'a+') as logfile:
             logfile.write(
                 'Processing trajectory segment %s frame %s of %s\n' % (core, structure.frame//step -
-                partial_traj['startframe']//step + 1, (partial_traj['endframe']-partial_traj['startframe'] -1) // step +1))
+                partial_traj['startframe']//step + 1, (partial_traj['endframe'] -
+                                                       partial_traj['startframe'] - 1) // step + 1))
+
+        # Account for PBC
+        structure.positions = \
+            mda.lib.distances.apply_PBC(structure.positions, box=structure.dimensions, backend='OpenMP')
 
         # Calculate interactions for frame
         u.process_frame(domain1, domain2, output, structure.frame)
@@ -160,7 +163,7 @@ def perform_analysis(config_filename='config.ini'):
 
     # Parallelization
     process_pool = Pool(processes=ncores)
-    func = partial(process_trajectory, topology, trajectories, dt, stride, ncores, mask1, mask2, extension)
+    func = partial(process_trajectory, topology, trajectories, dt, stride, ncores, mask1, mask2)
     process_pool.map(func, range(ncores))
     process_pool.close()
     process_pool.join()

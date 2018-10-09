@@ -66,4 +66,5 @@ setup(
     author_email="marko.tomin@irb.hr",
     description="Residue ELectrostatic Interaction Calculator",
     long_description=readme,
+    long_description_content_type="text/markdown",
 )
