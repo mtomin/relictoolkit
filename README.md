@@ -61,8 +61,8 @@ The `setup.py` script creates the executable file in the /bin directory and the 
 
 In addition to the built-in GUI, calculation and plotting scripts can be run as standalone scripts:
 
-	$python calculation.py path/to/config/file
-	$python plotting.py path/to/config/file
+	$python relictoolkit_calculate path/to/config/file
+	$python relictoolkit_plot path/to/config/file
 
 In this case, it is necessary to manually create the config.ini or config_plot.ini files containing the calculation/plotting parameters.
 

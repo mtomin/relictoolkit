@@ -28,7 +28,8 @@ with open('requirements.txt') as f:
 setup(
     name='relictoolkit',
     version='0.9',
-    setup_requires=['numpy',
+    setup_requires=['setuptools>=40.0.0',
+                    'numpy',
                     'matplotlib==1.5.2'],
     packages=find_packages(),
     zip_safe=True,

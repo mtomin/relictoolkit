@@ -1,6 +1,5 @@
 numpy
 matplotlib==1.5.2
-setuptools>=40.0.0
 six==1.11.0
 requests==2.19.1
 gsd==1.4.0
