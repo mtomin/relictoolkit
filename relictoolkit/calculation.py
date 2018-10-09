@@ -107,10 +107,6 @@ def process_trajectory(topology, trajlist, dt, step, ncores, mask1, mask2, exten
                 'Processing trajectory segment %s frame %s of %s\n' % (core, structure.frame//step -
                 partial_traj['startframe']//step + 1, (partial_traj['endframe']-partial_traj['startframe'] -1) // step +1))
 
-        # Account for PBC
-        structure.positions = \
-            mda.lib.distances.apply_PBC(structure.positions, box=structure.dimensions, backend='OpenMP')
-
         # Calculate interactions for frame
         u.process_frame(domain1, domain2, output, structure.frame)
     output.close()
