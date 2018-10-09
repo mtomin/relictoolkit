@@ -90,7 +90,7 @@ Graph can be further customized using Plotly's [Chart studio](https://plot.ly/on
 
 ![tutorial](examples/tutorial_plot.png)
 
-It can be observed that residues Lys3 and Glu99 contribute most to the interactions between the first and the second half of the peptide.
+It can be observed that residues Glu3 and Lys9 contribute most to the interactions between the first and the second half of the peptide. Those interactions are beginning to form at around 1.9 ns, while at that time residues 2 and 4 formed destabilizing interactions, mostly with Lys9
 
 ## License
 RELIC is distributed under the [CC-BY](https://creativecommons.org/licenses/by/4.0/) license.
