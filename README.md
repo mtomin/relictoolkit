@@ -11,15 +11,15 @@ When publishing results obtained using RELIC please cite this publication:
 ## Installation
 To install the RELIC toolkit, download the zip from GitHub, extract it to a directory of your choice and run:
 	
-	$python setup.py install
+	$ python setup.py install
 	
 Alternatively, you can install it with pip. If you don't have numpy installed, first install it with
 
-    $pip install numpy
+    $ pip install numpy
     
 And then install RELIC toolkit with
 
-    $pip install git+https://github.com/mtomin/relictoolkit.git
+    $ pip install git+https://github.com/mtomin/relictoolkit.git
 
 ### Requirements
 * Linux
@@ -45,7 +45,7 @@ And then install RELIC toolkit with
 ## Testing
 The installation can be tested by running:
 
-	$python setup.py test
+	$ python setup.py test
 
 which checks if all the core modules are working properly
 
@@ -57,12 +57,12 @@ which checks if all the core modules are working properly
 ## Usage
 The `setup.py` script creates the executable file in the /bin directory and the program can be run with:
 
-	$relictoolkit
+	$ relictoolkit
 
 In addition to the built-in GUI, calculation and plotting scripts can be run as standalone scripts:
 
-	$python relictoolkit_calculate path/to/config/file
-	$python relictoolkit_plot path/to/config/file
+	$ python relictoolkit_calculate path/to/config/file
+	$ python relictoolkit_plot path/to/config/file
 
 In this case, it is necessary to manually create the config.ini or config_plot.ini files containing the calculation/plotting parameters.
 
@@ -82,7 +82,7 @@ If left empty, distance cutoff defaults to 5 &#197;, internal dielectric constan
 
 Enter the desired number of cores and hit run. The calculation time should not exceed 2 minutes with a single core. The process can be tracked using the logfile:
 
-	$tail relic_logfile.log
+	$ tail relic_logfile.log
 
 #### Plotting
 Upon selecting the output file obtained in the previous part of the tutorial, the settings pane appears. The default settings can be used (plot against time, include all frames and all residues). After hitting run, the graph is created and automatically opened.
