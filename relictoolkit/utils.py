@@ -26,6 +26,8 @@ def vdw_energy(atom1, atom2, box_dimensions):
         First atom
     atom2: MDAnalysis.core.groups.Atom
         Second atom
+    box_dimensions: numpy.ndarray
+        Dimensions of the system box (for PBC imaging)
 
     Returns
     -------

@@ -1,3 +1,4 @@
+setuptools>=40.0.0
 numpy
 matplotlib==1.5.2
 six==1.11.0
