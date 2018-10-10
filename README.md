@@ -11,7 +11,7 @@ When publishing results obtained using RELIC please cite this publication:
 (to be added)
 
 ## Installation
-If you do not have [setuptools](https://pypi.org/project/setuptools/) installed, or have a version <40, install it with:
+If you do not have [setuptools](https://pypi.org/project/setuptools/) installed, or have a version earlier than 40.0, install it with:
 
     $ pip install --upgrade setuptools
 
