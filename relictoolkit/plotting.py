@@ -13,6 +13,7 @@ standard_library.install_aliases()
 
 
 def main(config_filename='config_plot.ini'):
+    # Load parameters from config
     filename = u.load_from_plot_config('files', 'datafile', config_filename)
     timeorframe = int(u.load_from_plot_config('parameters', 'timeorframe', config_filename))
     startframe = int(u.load_from_plot_config('parameters', 'startframe', config_filename))
@@ -25,17 +26,13 @@ def main(config_filename='config_plot.ini'):
     x = list()
     y = list()
     z = list()
-
     traces = list()
 
     # read timestep from file
-    dt = data.readline()
-    dt = data.readline()
-    dt = int(dt.split()[1])
+    next(data)
+    dt = int(data.readline().split()[1])
 
     for line in data:
-        if not (line.split()[0].isnumeric()):
-            continue
 
         current_frame = int(line.split()[0])
         current_res = int(line.split()[1])
@@ -68,7 +65,6 @@ def main(config_filename='config_plot.ini'):
         x=x,
         y=y,
         z=z,
-        name='',
         connectgaps=False))
 
     if timeorframe == 0:
@@ -93,7 +89,7 @@ def main(config_filename='config_plot.ini'):
         )
     }
     plot_display_options = dict(toImageButtonOptions=dict(width=2400, height=2400, filename='relic_plot'))
-    plotly.offline.plot(fig, auto_open=True, config=plot_display_options)
+    plotly.offline.plot(fig, auto_open=True, config=plot_display_options, filename='relic_plot.html')
 
 
 if __name__ == '__main__':
