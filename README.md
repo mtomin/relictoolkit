@@ -11,24 +11,25 @@ When publishing results obtained using RELIC please cite this publication:
 (to be added)
 
 ## Installation
+If you do not have [setuptools](https://pypi.org/project/setuptools/) installed, or have a version <40, install it with:
+
+    $ pip install --upgrade setuptools
+
 To install the RELIC toolkit, download the zip from GitHub, extract it to a directory of your choice and run:
 	
 	$ python setup.py install
 	
-Alternatively, you can install it with pip. If you don't have numpy installed, first install it with
-
-    $ pip install numpy
-    
-And then install RELIC toolkit with
+Alternatively, you can install it with pip:
 
     $ pip install git+https://github.com/mtomin/relictoolkit.git
 
 ### Requirements
-* Linux
-* Python 2.7 and up
+- Linux
+- Python 2.7 and up
+- [setuptools>=40.0](https://pypi.org/project/setuptools/)
 
 ### Dependencies
-- [setuptools](https://pypi.org/project/setuptools/)
+
 - [numpy](http://www.numpy.org/)
 - [matplotlib](https://matplotlib.org/)
 - [six](https://pypi.org/project/six/)
