@@ -51,9 +51,9 @@ The installation can be tested by running:
 which checks if all the core modules are working properly
 
 #### Testing dependencies:
-- pytest
-- pytest-cov
-- mock
+- [pytest](https://pypi.org/project/pytest/)
+- [pytest-cov](https://pypi.org/project/pytest-cov/)
+- [mock](https://pypi.org/project/mock/)
 
 ## Usage
 The `setup.py` script creates the executable file in the /bin directory and the program can be run with:
@@ -70,6 +70,7 @@ In this case, it is necessary to manually create the config.ini or config_plot.i
 ## Quick start
 The examples folder contains a short simulation of a peptide comprised of 15 amino acid residues (HRERFLADKSAPLCG).
 This tutorial will go through calculating interactions between the first (residues 1-7) and second (residues 8-15) half of the protein.
+
 #### Calculation
 In the Calculate tab navigate to the topology and trajectory files located in the relictoolkit/examples folder. Set the location of the output file and make sure the filetype "Amber binary trajectory (.ncdf)" is selected.
 Mask1 and Mask2 define the regions of the studied system. In our case, Mask1 contains residues 1 to 7, whereas Mask2 contains residues 8-15. RELIC uses the [MDAnalysis selection syntax](https://www.mdanalysis.org/docs/documentation_pages/selections.html), so to select appropriate residues enter:
