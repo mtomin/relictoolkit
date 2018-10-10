@@ -18,7 +18,7 @@ def test_vdw_energy():
     system = MDAnalysis.Universe(topology, trajectory, format='mdcrd')
     p.add_lj_parameters(system)
     energy = u.vdw_energy(system.atoms[0], system.atoms[1], system.dimensions)
-    assert energy == -7.187247642513824e-07
+    assert energy == -7.1872471955340208e-07
 
 
 def test_electrostatic_energy():
@@ -26,7 +26,7 @@ def test_electrostatic_energy():
     trajectory = os.path.dirname(__file__) + '/data/testtraj.xcrd'
     system = MDAnalysis.Universe(topology, trajectory, format='mdcrd')
     energy = u.electrostatic_energy(system.atoms[0], system.atoms[1], system.dimensions)
-    assert energy == 0.8285045941030004
+    assert energy == 0.82850458551545669
 
 
 def test_load_from_config():
