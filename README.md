@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/mtomin/relictoolkit.svg?branch=master)](https://travis-ci.org/mtomin/relictoolkit)
 # **RELIC**                                 
 ## Residue ELectronic Interaction Calculator
 
