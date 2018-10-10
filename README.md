@@ -6,6 +6,7 @@ Tracking the evolution of electrostatic interactions over the simulation time al
 
 ## Citing RELIC
 When publishing results obtained using RELIC please cite this publication:
+
 (to be added)
 
 ## Installation
@@ -91,6 +92,16 @@ The graph can be further customized using Plotly's [Chart studio](https://plot.l
 ![tutorial](examples/tutorial_plot.png)
 
 It can be observed that residues Glu3 and Lys9 contribute most to the interactions between the first and the second half of the peptide. Those interactions are beginning to form at around 1.9 ns, while at that time residues 2 and 4 formed destabilizing interactions, mostly with Lys9.
+
+## Troubleshooting
+In case of dependency issues, try creating a clean environment with [anaconda](https://www.anaconda.com/download/#linux) or [miniconda](https://conda.io/miniconda.html):
+
+    $ conda create myenv python --no-default-packages
+    $ source activate myenv
+
+And retry the installation.
+
+If you are having issues with the "traditional" setuptools installation, try installing via pip.
 
 ## License
 RELIC is distributed under the [CC-BY](https://creativecommons.org/licenses/by/4.0/) license.
