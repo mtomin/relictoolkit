@@ -27,11 +27,16 @@ def test_process_trajectory():
         os.remove(os.path.dirname(__file__) + '/data/testtraj.mdcrd')
         os.symlink(os.path.dirname(__file__) + '/data/testtraj.xcrd', os.path.dirname(__file__) + '/data/testtraj.mdcrd')
 
+    if os.path.isfile('relic_logfile.log'):
+        os.remove('relic_logfile.log')
+
     c.process_trajectory(topology, [os.path.dirname(__file__) + '/data/testtraj.mdcrd'], 2, 1, 1, mask1, mask2, 0)
     logfile = open('relic_logfile.log', 'r+')
     log_line = logfile.readline()
+    print(log_line)
     assert log_line == 'Core 0 assigned frames 0 to 1\n'
     log_line = logfile.readline()
+    print(log_line)
     assert log_line == 'Processing trajectory segment 0 frame 1 of 1\n'
     logfile.close()
     os.remove('relic_logfile.log')
