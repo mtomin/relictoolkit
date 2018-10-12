@@ -62,7 +62,7 @@ def test_load_plot_config():
     with open(test_config_filename, 'w+') as f:
         config.write(f)
 
-    assert u.load_from_plot_config('parameters', 'interactive', test_config_filename) == 'False'
+    assert u.load_from_plot_config('parameters', 'plot_type', test_config_filename) == 'averages'
     assert u.load_from_plot_config('parameters', 'startframe', test_config_filename) == '2'
     assert u.load_from_plot_config('parameters', 'starting_residue', test_config_filename) == '3'
     assert u.load_from_plot_config('parameters', 'endframe', test_config_filename) == '4'
@@ -77,7 +77,7 @@ def test_load_plot_config_defaults():
     with open(test_config_filename, 'w+') as f:
         config.write(f)
 
-    assert u.load_from_plot_config('parameters', 'interactive', test_config_filename) == 'True'
+    assert u.load_from_plot_config('parameters', 'plot_type', test_config_filename) == 'time'
     assert u.load_from_plot_config('parameters', 'startframe', test_config_filename) == 0
     assert u.load_from_plot_config('parameters', 'starting_residue', test_config_filename) == 1
     assert u.load_from_plot_config('parameters', 'endframe', test_config_filename) == 4500
