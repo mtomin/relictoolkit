@@ -12,28 +12,32 @@ import relictoolkit.utils as u
 standard_library.install_aliases()
 
 
-def main(config_filename='config_plot.ini'):
-    # Load parameters from config
-    filename = u.load_from_plot_config('files', 'datafile', config_filename)
-    plottype = u.load_from_plot_config('parameters', 'plot_type', config_filename)
-    startframe = int(u.load_from_plot_config('parameters', 'startframe', config_filename))
-    endframe = int(u.load_from_plot_config('parameters', 'endframe', config_filename))
-    starting_residue = int(u.load_from_plot_config('parameters', 'starting_residue', config_filename))
-    end_residue = int(u.load_from_plot_config('parameters', 'end_residue', config_filename))
+def read_datafile(data, startframe, endframe, starting_residue, end_residue, plottype, dt):
+    """Parse the calculation output and return datapoints for plotting.
 
-    data = open(filename)
+    Parameters
+    ----------
+    data: _io.TextIOWrapper
+        File containing the calculation output.
+    startframe: int
+        Starting frame for plotting
+    endframe: int
+        End frame for plotting
+    starting_residue: int
+        Starting residue for plotting
+    end_residue: int
+        End residue for pltoting
+    plottype: str
+        Plot type - energy vs. time, energy vs. frame number or average energy for each residue
+    dt: int
+        Timestep used in the simulations
+    """
+
     frame = 0
     x = list()
     y = list()
     z = list()
-    traces = list()
-
-    # read timestep from file
-    next(data)
-    dt = int(data.readline().split()[1])
-
     for line in data:
-
         current_frame = int(line.split()[0])
         current_res = int(line.split()[1])
 
@@ -58,6 +62,38 @@ def main(config_filename='config_plot.ini'):
 
         if frame > endframe:
             break
+
+    datapoints={'x': x,
+                'y': y,
+                'z': z,
+                'step': step}
+    return datapoints
+
+
+def main(config_filename='config_plot.ini'):
+    # Load parameters from config
+    filename = u.load_from_plot_config('files', 'datafile', config_filename)
+    plottype = u.load_from_plot_config('parameters', 'plot_type', config_filename)
+    startframe = int(u.load_from_plot_config('parameters', 'startframe', config_filename))
+    endframe = int(u.load_from_plot_config('parameters', 'endframe', config_filename))
+    starting_residue = int(u.load_from_plot_config('parameters', 'starting_residue', config_filename))
+    end_residue = int(u.load_from_plot_config('parameters', 'end_residue', config_filename))
+
+    data = open(filename)
+
+    traces = list()
+
+    # read timestep from file
+    next(data)
+    dt = int(data.readline().split()[1])
+
+    datapoints = read_datafile(data, startframe, endframe, starting_residue, end_residue, plottype, dt)
+    data.close()
+
+    x = datapoints['x']
+    y = datapoints['y']
+    z = datapoints['z']
+    step = datapoints['step']
 
     traces.append(go.Scatter3d(
         mode='lines',

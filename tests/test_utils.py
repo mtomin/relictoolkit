@@ -154,4 +154,13 @@ def test_write_logfile_header():
     with open('testlogfile', 'r+') as testlogfile:
         assert testlogfile.readline()[0:19] == 'Calculation started'
 
-# TODO test load trajectory
+
+def test_load_partial_traj():
+    topology = os.path.dirname(__file__) + '/data/testtop.prmtop'
+    trajectory = os.path.dirname(__file__) + '/data/testtraj.xcrd'
+    system = MDAnalysis.Universe(topology, trajectory, format='mdcrd')
+    result = u.load_partial_traj(system, 1, 1, 0)
+    assert result['traj'][0].dimensions[3] == 90.0
+    assert result['startframe'] == 0
+
+test_load_partial_traj()
