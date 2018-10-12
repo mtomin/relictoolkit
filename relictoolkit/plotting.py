@@ -107,9 +107,7 @@ def main(config_filename='config_plot.ini'):
             avg_res_energy = avg_res_energy * step / (endframe - startframe + step)
             residues.append(residue)
             average_residue_energies.append(avg_res_energy)
-        print(residues)
-        print(average_residue_energies)
-        print(step / (endframe - startframe))
+
         traces=[(go.Scatter(
             mode='lines',
             line={'width': 5},
@@ -125,7 +123,6 @@ def main(config_filename='config_plot.ini'):
                                autorange=True),
                     yaxis=dict(title='E<sub>avg</sub>/kJmol<sup>-1</sup>',
                                autorange=True),
-                    #aspectratio=dict(x=1, y=1),
                 ),
                 font=dict(family='Arial', size=18),
             )
