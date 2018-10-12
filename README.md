@@ -106,5 +106,9 @@ And retry the installation.
 
 If you are having issues with the "traditional" setuptools installation, try installing via pip.
 
+If the dependency issues persist, install the requirements with
+
+    $ pip install -r requirements.txt
+
 ## License
 RELIC is distributed under the [CC-BY](https://creativecommons.org/licenses/by/4.0/) license.
