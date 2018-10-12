@@ -19,5 +19,26 @@ def test_add_lj_parameters():
 
 def test_process_trajectory():
     topology = os.path.dirname(__file__) + '/data/testtop.prmtop'
-    trajectory = os.path.dirname(__file__) + '/data/testtraj.xcrd'
-    system = MDAnalysis.Universe(topology, trajectory, format='mdcrd')
+    mask1 = 'resid 3'
+    mask2 = 'resid 4'
+    try:
+        os.symlink(os.path.dirname(__file__) + '/data/testtraj.xcrd', os.path.dirname(__file__) + '/data/testtraj.mdcrd')
+    except FileExistsError:
+        os.remove(os.path.dirname(__file__) + '/data/testtraj.mdcrd')
+        os.symlink(os.path.dirname(__file__) + '/data/testtraj.xcrd', os.path.dirname(__file__) + '/data/testtraj.mdcrd')
+
+    c.process_trajectory(topology, [os.path.dirname(__file__) + '/data/testtraj.mdcrd'], 2, 1, 1, mask1, mask2, 0)
+    logfile = open(os.path.dirname(__file__)+'/relic_logfile.log', 'r+')
+    log_line = logfile.readline()
+    assert log_line == 'Core 0 assigned frames 0 to 1\n'
+    log_line = logfile.readline()
+    assert log_line == 'Processing trajectory segment 0 frame 1 of 1\n'
+    logfile.close()
+    os.remove(os.path.dirname(__file__)+'/relic_logfile.log')
+    with open(os.path.dirname(__file__) + '/output.dat_0', 'r+') as output:
+        next(output)
+        next(output)
+        output_line = output.readline()
+        assert output_line.split()[2] == '-3.22555'
+    os.remove(os.path.dirname(__file__) + '/output.dat_0')
+
