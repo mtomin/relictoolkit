@@ -3,7 +3,6 @@ python:
   - "2.7"
   - "3.5"
 script:
-  - pip install coveralls
-  - pip install pyyaml
-  - coverage run --source=relictoolkit setup.py test
+  - pip install python-coveralls
+after_success:
   - coveralls
