@@ -1,5 +1,14 @@
+from __future__ import unicode_literals
+from __future__ import print_function
+from __future__ import division
+from __future__ import absolute_import
+from builtins import open
+from builtins import next
+from builtins import int
+from future import standard_library
 import os
 import relictoolkit.plotting as p
+standard_library.install_aliases()
 
 
 def test_read_datafile():
