@@ -4,5 +4,6 @@ python:
   - "3.5"
 script:
   - pip install python-coveralls
-after_success:
+  - pip install pyyaml
+  - coverage run --source=relictoolkit setup.py test
   - coveralls
