@@ -140,7 +140,7 @@ class TotalGui(object):
             """
             Parameters
             ----------
-            master : tk.Tk()
+            master : tkinter.Tk()
                 Master window of the Calculate frame
             """
 
@@ -183,11 +183,11 @@ class TotalGui(object):
             # Create entry boxes for masks, dielectric constant, stride, etc.
             self.mask1 = TotalGui.EntryBox('Mask1', self)
             self.mask2 = TotalGui.EntryBox('Mask2', self)
-            self.indi = TotalGui.EntryBox('Internal dielectric constant', self)
             self.cutoff = TotalGui.EntryBox('Distance cutoff / \N{ANGSTROM SIGN}', self)
+            self.indi = TotalGui.EntryBox('Internal dielectric constant', self)
             self.stride = TotalGui.EntryBox('Stride', self)
-            self.processors = TotalGui.EntryBox('Number of cores', self)
             self.dt = TotalGui.EntryBox('Timestep / fs', self)
+            self.processors = TotalGui.EntryBox('Number of cores', self)
 
             self.vdw = TotalGui.CheckBox('Calculate van der Waals interactions', self)
 
@@ -231,7 +231,7 @@ class TotalGui(object):
             """
             Parameters
             ----------
-            master : tk.Tk()
+            master : tkinter.Tk()
                 Master window of the Calculate frame
             """
 
@@ -245,7 +245,7 @@ class TotalGui(object):
             self.data.filename.trace('w', self.generate_settings_pane)
             self.data.configure(text='Browse...', command=lambda: self.data.filename.set(browse_input()))
 
-            self.timeorframe = tk.IntVar()
+            self.plottype = tk.StringVar()
             self.startingframe = TotalGui.EntryBox('Starting frame (default 0)', self)
             self.endframe = TotalGui.EntryBox('Final frame (default last)', self)
             self.starting_residue = TotalGui.EntryBox('Starting residue (default 1)', self)
@@ -271,13 +271,30 @@ class TotalGui(object):
             """
 
             if self.data.filename.get() != 'None':
-                plot_type_label = tk.Label(self, text='Plot data against:')
-                plot_type_label.grid(row=1, column=0, pady=10)
-                time_radiobutton = ttk.Radiobutton(self, text='Time', variable=self.timeorframe, value=0)
-                time_radiobutton.grid_configure(row=2, column=0)
-                frame_radiobutton = ttk.Radiobutton(self, text='Frame number', variable=self.timeorframe, value=1)
-                frame_radiobutton.grid_configure(row=2, column=1)
 
+                # Plot type layout
+                plot_type_label = tk.Label(self, text='Plot type:')
+                plot_type_label.grid(row=1, columnspan=3, sticky='n')
+
+                time_radiobutton = ttk.Radiobutton(self,
+                                                   text='Interactions vs. time',
+                                                   variable=self.plottype,
+                                                   value='time')
+                time_radiobutton.grid_configure(row=2, columnspan=3, sticky='w', padx=100, pady=(5, 20))
+
+                frame_radiobutton = ttk.Radiobutton(self,
+                                                    text='Interactions vs. frame number',
+                                                    variable=self.plottype,
+                                                    value='frame_number')
+                frame_radiobutton.grid_configure(row=2, columnspan=3, sticky='n', pady=(5, 20))
+
+                averages_radiobutton = ttk.Radiobutton(self,
+                                                       text='Average energy per residue',
+                                                       variable=self.plottype,
+                                                       value='averages')
+                averages_radiobutton.grid_configure(row=2, columnspan=3, sticky='e', padx=(0, 100), pady=(5, 20))
+
+                # Plot settings layout
                 self.startingframe.grid_configure(row=3, column=1)
                 self.startingframe.label.grid_configure(row=3, column=0)
 
@@ -302,7 +319,7 @@ class TotalGui(object):
         """
         Parameters
         ----------
-        master : tk.Tk()
+        master : tkinter.Tk()
             Main window
         """
         self.master = master
@@ -427,7 +444,7 @@ def generate_plot_config(gui, config):
         'datafile': gui.data.filename.get()
     }
     config['parameters'] = {
-        'timeorframe': gui.timeorframe.get(),
+        'plot_type': gui.plottype.get(),
         'startframe': gui.startingframe.get(),
         'endframe': gui.endframe.get(),
         'starting_residue': gui.starting_residue.get(),

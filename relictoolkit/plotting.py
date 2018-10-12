@@ -15,7 +15,7 @@ standard_library.install_aliases()
 def main(config_filename='config_plot.ini'):
     # Load parameters from config
     filename = u.load_from_plot_config('files', 'datafile', config_filename)
-    timeorframe = int(u.load_from_plot_config('parameters', 'timeorframe', config_filename))
+    plottype = u.load_from_plot_config('parameters', 'plot_type', config_filename)
     startframe = int(u.load_from_plot_config('parameters', 'startframe', config_filename))
     endframe = int(u.load_from_plot_config('parameters', 'endframe', config_filename))
     starting_residue = int(u.load_from_plot_config('parameters', 'starting_residue', config_filename))
@@ -49,9 +49,9 @@ def main(config_filename='config_plot.ini'):
             y.append(None)
             z.append(None)
 
-        if timeorframe == 0:
+        if plottype == 'time':
             x.append(float(line.split()[0])/(1000*dt))
-        else:
+        elif plottype == 'frame_number':
             x.append(float(line.split()[0]))
         y.append(float(line.split()[1]))
         z.append(float(line.split()[2]))
@@ -67,29 +67,71 @@ def main(config_filename='config_plot.ini'):
         z=z,
         connectgaps=False))
 
-    if timeorframe == 0:
+    if plottype == 'time':
         xaxis_title = 'Time/ns'
-    else:
+    elif plottype == 'frame_number':
         xaxis_title = 'Frame'
-    fig = {
-        'data': traces,
-        'layout': go.Layout(
-            title='Residue interactions',
-            margin=dict(l=0, r=0, b=0, t=0),
-            scene=dict(
-                xaxis=dict(title=xaxis_title,
-                           autorange=True),
-                yaxis=dict(title='Residue',
-                           autorange=True),
-                zaxis=dict(title='E/kJmol<sup>-1</sup>',
-                           autorange=True),
-                aspectratio=dict(x=1, y=1, z=1),
-            ),
-            font=dict(family='Arial', size=18),
-        )
-    }
-    plot_display_options = dict(toImageButtonOptions=dict(width=2400, height=2400, filename='relic_plot'))
-    plotly.offline.plot(fig, auto_open=True, config=plot_display_options, filename='relic_plot.html')
+    elif plottype == 'averages':
+        xaxis_title = 'Average energy'
+    if plottype != 'averages':
+        fig = {
+            'data': traces,
+            'layout': go.Layout(
+                title='Residue interactions',
+                scene=dict(
+                    xaxis=dict(title=xaxis_title,
+                               autorange=True),
+                    yaxis=dict(title='Residue',
+                               autorange=True),
+                    zaxis=dict(title='E/kJmol<sup>-1</sup>',
+                               autorange=True),
+                    aspectratio=dict(x=1, y=1, z=1),
+                ),
+                font=dict(family='Arial', size=18),
+            )
+        }
+        plot_display_options = dict(toImageButtonOptions=dict(width=2400, height=2400, filename='relic_plot'))
+        plotly.offline.plot(fig, auto_open=True, config=plot_display_options, filename='relic_plot.html')
+
+    elif plottype == 'averages':
+        with open(filename, 'r+') as results:
+            last_line = u.tail(results)
+        num_of_residues = int(last_line[0].split()[1])
+        average_residue_energies = list()
+        residues = list()
+
+        for residue in range(starting_residue, end_residue + 1):
+            avg_res_energy = 0
+            for energy in traces[0]['z'][residue - 1:len(traces[0]['z']):num_of_residues + 1]:
+                avg_res_energy += energy
+            avg_res_energy = avg_res_energy * step / (endframe - startframe + step)
+            residues.append(residue)
+            average_residue_energies.append(avg_res_energy)
+        print(residues)
+        print(average_residue_energies)
+        print(step / (endframe - startframe))
+        traces=[(go.Scatter(
+            mode='lines',
+            line={'width': 5},
+            x=residues,
+            y=average_residue_energies,
+            connectgaps=False))]
+        fig = {
+            'data': traces,
+            'layout': go.Layout(
+                title='Average residue energies',
+                scene=dict(
+                    xaxis=dict(title='Residue',
+                               autorange=True),
+                    yaxis=dict(title='E<sub>avg</sub>/kJmol<sup>-1</sup>',
+                               autorange=True),
+                    #aspectratio=dict(x=1, y=1),
+                ),
+                font=dict(family='Arial', size=18),
+            )
+        }
+        plot_display_options = dict(toImageButtonOptions=dict(width=2400, height=2400, filename='relic_plot'))
+        plotly.offline.plot(fig, auto_open=True, config=plot_display_options, filename='relic_plot.html')
 
 
 if __name__ == '__main__':
