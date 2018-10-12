@@ -59,6 +59,7 @@ def check_params(settings, filename='config.ini'):
     extension = settings.get('files', 'filetype')
     mask1 = settings.get('parameters', 'mask1')
     mask2 = settings.get('parameters', 'mask2')
+    cutoff = settings.get('parameters', 'cutoff')
 
     try:
         stride = int(load_from_config('parameters', 'stride', filename)[0])
@@ -124,6 +125,12 @@ def check_params(settings, filename='config.ini'):
     if error_message == '':
         if len(system.select_atoms(mask2)) == 0:
             error_message = 'Mask2 contains no atoms!'
+    if error_message == '':
+        if cutoff != '':
+            try:
+                cutoff = float(cutoff)
+            except ValueError:
+                error_message = 'Cutoff must be a number!'
 
     return error_message
 
