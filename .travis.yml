@@ -4,3 +4,6 @@ python:
   - "3.5"
 script:
   - python setup.py test
+  - pip install coveralls
+  - coverage run --source=mypkg setup.py test
+  - coveralls
