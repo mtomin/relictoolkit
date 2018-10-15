@@ -12,7 +12,6 @@ import mock
 standard_library.install_aliases()
 
 
-
 def test_add_lj_parameters():
     topology = os.path.dirname(__file__) + '/data/testtop.prmtop'
     trajectory = os.path.dirname(__file__) + '/data/testtraj.xcrd'
