@@ -83,6 +83,10 @@ def test_load_plot_config_defaults():
     assert u.load_from_plot_config('parameters', 'endframe', test_config_filename) == 4500
     assert u.load_from_plot_config('parameters', 'end_residue', test_config_filename) == 692
 
+    config.set('files', 'datafile', '/data/test_output.out')
+    with open(test_config_filename, 'w+') as f:
+        config.write(f)
+
 
 def test_check_params():
     config = ConfigParser()
@@ -162,6 +166,3 @@ def test_load_partial_traj():
     result = u.load_partial_traj(system, 1, 1, 0)
     assert result['traj'][0].dimensions[3] == 90.0
     assert result['startframe'] == 0
-
-
-test_load_partial_traj()

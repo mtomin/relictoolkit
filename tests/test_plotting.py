@@ -62,7 +62,3 @@ def test_generate_figure_data(calculate_averages_mock, read_datafile_mock):
     assert testfigure['layout']['title'] == 'Average residue energies'
     assert testfigure['data'][0]['x'] == (1, 692)
     assert testfigure['data'][0]['y'] == (0, -38.58544)
-
-
-test_calculate_averages()
-test_generate_figure_data()
