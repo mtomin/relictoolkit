@@ -37,6 +37,7 @@ def read_datafile(data, startframe, endframe, starting_residue, end_residue, plo
     x = list()
     y = list()
     z = list()
+    step = 1
     for line in data:
         current_frame = int(line.split()[0])
         current_res = int(line.split()[1])
@@ -107,7 +108,28 @@ def generate_layout(plottype):
     return layout
 
 
-def main(config_filename='config_plot.ini'):
+def calculate_averages(filename, datapoints, startframe, endframe, starting_residue, end_residue):
+    with open(filename, 'r+') as results:
+        last_line = u.tail(results)
+    num_of_residues = int(last_line[0].split()[1])
+    average_residue_energies = list()
+    residues = list()
+
+    for residue in range(starting_residue, end_residue + 1):
+        avg_res_energy = 0
+        for energy in datapoints['z'][residue - 1:len(datapoints['z']):num_of_residues + 1]:
+            avg_res_energy += energy
+        avg_res_energy = avg_res_energy * datapoints['step'] / (endframe - startframe + datapoints['step'])
+        residues.append(residue)
+        average_residue_energies.append(avg_res_energy)
+    results = {
+        'residues': residues,
+        'residue_energies': average_residue_energies
+    }
+    return results
+
+
+def generate_figure_data(config_filename):
     # Load parameters from config
     filename = u.load_from_plot_config('files', 'datafile', config_filename)
     plottype = u.load_from_plot_config('parameters', 'plot_type', config_filename)
@@ -130,7 +152,6 @@ def main(config_filename='config_plot.ini'):
     x = datapoints['x']
     y = datapoints['y']
     z = datapoints['z']
-    step = datapoints['step']
 
     traces.append(go.Scatter3d(
         mode='lines',
@@ -139,49 +160,41 @@ def main(config_filename='config_plot.ini'):
         y=y,
         z=z,
         connectgaps=False))
-    '''
-    if plottype == 'time':
-        xaxis_title = 'Time/ns'
-    elif plottype == 'frame_number':
-        xaxis_title = 'Frame'
-    elif plottype == 'averages':
-        xaxis_title = 'Average energy'
-    '''
+
     if plottype != 'averages':
         fig = {
             'data': traces,
             'layout': generate_layout(plottype)
         }
-        plot_display_options = dict(toImageButtonOptions=dict(width=2400, height=2400, filename='relic_plot'))
-        plotly.offline.plot(fig, auto_open=True, config=plot_display_options, filename='relic_plot.html')
 
     elif plottype == 'averages':
-        with open(filename, 'r+') as results:
-            last_line = u.tail(results)
-        num_of_residues = int(last_line[0].split()[1])
-        average_residue_energies = list()
-        residues = list()
+        averages_data = calculate_averages(filename, datapoints, startframe, endframe, starting_residue, end_residue)
 
-        for residue in range(starting_residue, end_residue + 1):
-            avg_res_energy = 0
-            for energy in traces[0]['z'][residue - 1:len(traces[0]['z']):num_of_residues + 1]:
-                avg_res_energy += energy
-            avg_res_energy = avg_res_energy * step / (endframe - startframe + step)
-            residues.append(residue)
-            average_residue_energies.append(avg_res_energy)
-
-        traces=[(go.Scatter(
+        traces = [(go.Scatter(
             mode='lines',
             line={'width': 5},
-            x=residues,
-            y=average_residue_energies,
+            x=averages_data['residues'],
+            y=averages_data['residue_energies'],
             connectgaps=False))]
         fig = {
             'data': traces,
             'layout': generate_layout(plottype)
         }
+
+    return fig
+
+
+def main(config_filename='config_plot.ini'):
+    plottype = u.load_from_plot_config('parameters', 'plot_type', config_filename)
+    figure = generate_figure_data(config_filename)
+
+    if plottype != 'averages':
         plot_display_options = dict(toImageButtonOptions=dict(width=2400, height=2400, filename='relic_plot'))
-        plotly.offline.plot(fig, auto_open=True, config=plot_display_options, filename='relic_plot.html')
+        plotly.offline.plot(figure, auto_open=True, config=plot_display_options, filename='relic_plot.html')
+
+    elif plottype == 'averages':
+        plot_display_options = dict(toImageButtonOptions=dict(width=2400, height=2400, filename='relic_plot'))
+        plotly.offline.plot(figure, auto_open=True, config=plot_display_options, filename='relic_plot.html')
 
 
 if __name__ == '__main__':

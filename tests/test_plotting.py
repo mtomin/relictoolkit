@@ -8,6 +8,7 @@ from builtins import int
 from future import standard_library
 import os
 import relictoolkit.plotting as p
+import mock
 standard_library.install_aliases()
 
 
@@ -38,4 +39,30 @@ def test_generate_layout():
     assert test_layout['scene']['xaxis']['title'] == 'Residue'
 
 
-test_read_datafile()
+def test_calculate_averages():
+    datapoints = {'z': [0.0, -38.58544], 'y': [1.0, 692.0], 'step': 4500, 'x': [0.0, 2.25]}
+    test_averages = p.calculate_averages(os.path.dirname(__file__) + '/data/test_output.out', datapoints, 1, 1, 1, 692)
+    assert len(test_averages['residues']) == 692
+    assert test_averages['residue_energies'][1] == -38.58544
+
+
+@mock.patch('relictoolkit.plotting.read_datafile')
+@mock.patch('relictoolkit.plotting.calculate_averages')
+def test_generate_figure_data(calculate_averages_mock, read_datafile_mock):
+    read_datafile_mock.return_value = {
+        'z': [0.0, None, -38.58544], 'y': [1.0, None, 692.0], 'step': 4500, 'x': [0.0, None, 2.25]
+    }
+    calculate_averages_mock.return_value = {
+            'residues': [1, 692],
+            'residue_energies': [0, -38.58544]
+        }
+
+    testfigure = p.generate_figure_data(os.path.dirname(__file__) + '/data/test_config_plot.ini')
+
+    assert testfigure['layout']['title'] == 'Average residue energies'
+    assert testfigure['data'][0]['x'] == (1, 692)
+    assert testfigure['data'][0]['y'] == (0, -38.58544)
+
+
+test_calculate_averages()
+test_generate_figure_data()
