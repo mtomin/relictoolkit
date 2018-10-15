@@ -28,7 +28,7 @@ def test_timeit():
     with open('relic_logfile.log', 'r+') as logfile:
         next(logfile)
         line = logfile.readline()
-    assert line == 'Calculation finished successfully'
+    assert line == 'Calculation finished successfully\n'
     os.remove('relic_logfile.log')
 
 
