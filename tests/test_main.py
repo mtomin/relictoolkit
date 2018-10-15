@@ -11,6 +11,9 @@ from configparser import ConfigParser
 import os
 standard_library.install_aliases()
 
+new_env = dict(os.environ)
+new_env['DISPLAY'] = '0.0'
+
 
 class TestPlot(ttk.Frame):
     """
