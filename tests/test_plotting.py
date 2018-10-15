@@ -52,7 +52,7 @@ def test_calculate_averages():
 def test_generate_figure_data(calculate_averages_mock, read_datafile_mock):
 
     # Set path in confg_plot.ini
-    test_config_filename = os.path.dirname(__file__) + '/data/test_config_plot_defaults.ini'
+    test_config_filename = os.path.dirname(__file__) + '/data/test_config_plot.ini'
     config = ConfigParser()
     config.read(test_config_filename)
     config.set('files', 'datafile', os.path.dirname(__file__) + '/data/test_output.out')
@@ -72,3 +72,7 @@ def test_generate_figure_data(calculate_averages_mock, read_datafile_mock):
     assert testfigure['layout']['title'] == 'Average residue energies'
     assert testfigure['data'][0]['x'] == (1, 692)
     assert testfigure['data'][0]['y'] == (0, -38.58544)
+
+    config.set('files', 'datafile', '/data/test_output.out')
+    with open(test_config_filename, 'w+') as f:
+        config.write(f)

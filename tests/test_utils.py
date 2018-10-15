@@ -9,6 +9,7 @@ import relictoolkit.calculation as p
 import MDAnalysis
 from configparser import ConfigParser
 import os
+import mock
 standard_library.install_aliases()
 
 
@@ -134,14 +135,16 @@ def test_check_plot_params():
     assert u.check_plot_params(config, config_filename) == 'File not found!'
 
 
-def test_interdomain_interactions():
+@mock.patch('relictoolkit.utils.electrostatic_energy')
+def test_interdomain_interactions(electrostatic_energy_mock):
+    electrostatic_energy_mock.return_value = -1
     topology = os.path.dirname(__file__) + '/data/testtop.prmtop'
     trajectory = os.path.dirname(__file__) + '/data/testtraj.xcrd'
     system = MDAnalysis.Universe(topology, trajectory, format='mdcrd')
     domain1 = system.select_atoms('resid 1')
     domain2 = system.select_atoms('resid 3')
     interaction = u.interdomain_interactions(domain1, domain2, 1)
-    assert interaction[0].split()[2] == '-2.53884'
+    assert interaction[0].split()[2] == '-285'
 
 
 def test_read_uff_parameters():
@@ -166,3 +169,15 @@ def test_load_partial_traj():
     result = u.load_partial_traj(system, 1, 1, 0)
     assert result['traj'][0].dimensions[3] == 90.0
     assert result['startframe'] == 0
+
+
+@mock.patch('relictoolkit.utils.interdomain_interactions')
+def test_process_frame(interdomain_interactions_mock):
+    interdomain_interactions_mock.return_value = ['0 1 2 0 2']
+    with open('test_frameprocess.dat', 'w+') as testoutput:
+        u.process_frame('resid 1', 'resid2', testoutput, 1)
+
+    with open('test_frameprocess.dat', 'r+') as testoutput:
+        line = testoutput.readline()
+    assert line == '0 1 2 0 2\n'
+    os.remove('test_frameprocess.dat')
