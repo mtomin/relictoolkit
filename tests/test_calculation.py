@@ -74,5 +74,3 @@ def test_process_trajectory(self):
     os.remove('output.dat_0')
     os.remove(os.path.dirname(__file__) + '/data/testtraj.mdcrd')
 
-
-test_process_trajectory()
