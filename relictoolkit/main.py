@@ -270,7 +270,7 @@ class TotalGui(object):
             Arguments returned by trace
             """
 
-            if self.data.filename.get() != 'None':
+            if self.data.filename.get() != 'None' and self.data.filename.get() != '':
 
                 # Plot type layout
                 plot_type_label = tk.Label(self, text='Plot type:')
@@ -293,6 +293,7 @@ class TotalGui(object):
                                                        variable=self.plottype,
                                                        value='averages')
                 averages_radiobutton.grid_configure(row=2, columnspan=3, sticky='e', padx=(0, 100), pady=(5, 20))
+                self.plottype.set('time')
 
                 # Plot settings layout
                 self.startingframe.grid_configure(row=3, column=1)
@@ -400,7 +401,7 @@ def generate_config(gui, config):
     ----------
     gui : tkinter.Tk()
         Interface
-    config : Configparser
+    config : configparser.Configparser
         Container for data found in config.ini
     """
 
