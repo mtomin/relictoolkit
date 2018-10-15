@@ -21,9 +21,14 @@ def test_add_lj_parameters():
 
 
 def test_timeit():
+
     @c.timeit
     def test_function():
         pass
+
+    if os.path.isfile('relic_logfile.log'):
+        os.remove('relic_logfile.log')
+
     test_function()
     with open('relic_logfile.log', 'r+') as logfile:
         next(logfile)
