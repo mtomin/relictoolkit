@@ -6,6 +6,7 @@ from builtins import open
 from builtins import next
 from builtins import int
 from future import standard_library
+from configparser import ConfigParser
 import os
 import relictoolkit.plotting as p
 import mock
@@ -49,6 +50,15 @@ def test_calculate_averages():
 @mock.patch('relictoolkit.plotting.read_datafile')
 @mock.patch('relictoolkit.plotting.calculate_averages')
 def test_generate_figure_data(calculate_averages_mock, read_datafile_mock):
+
+    # Set path in confg_plot.ini
+    test_config_filename = os.path.dirname(__file__) + '/data/test_config_plot_defaults.ini'
+    config = ConfigParser()
+    config.read(test_config_filename)
+    config.set('files', 'datafile', os.path.dirname(__file__) + '/data/test_output.out')
+    with open(test_config_filename, 'w+') as f:
+        config.write(f)
+
     read_datafile_mock.return_value = {
         'z': [0.0, None, -38.58544], 'y': [1.0, None, 692.0], 'step': 4500, 'x': [0.0, None, 2.25]
     }
