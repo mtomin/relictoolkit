@@ -18,6 +18,12 @@ def test_read_datafile():
         datapoints = p.read_datafile(data, 0, 4500, 1, 692, 'time', dt)
     assert datapoints == {'z': [0.0, None, -38.58544], 'y': [1.0, None, 692.0], 'step': 4500, 'x': [0.0, None, 2.25]}
 
+    with open(os.path.dirname(__file__) + '/data/test_output.out') as data:
+        next(data)
+        dt = int(data.readline().split()[1])
+        datapoints = p.read_datafile(data, 0, 4500, 1, 692, 'averages', dt)
+    assert datapoints == {'x': [None], 'z': [0.0, None, -38.58544], 'y': [1.0, None, 692.0], 'step': 4500}
+
 
 def test_generate_layout():
     test_layout = p.generate_layout('time')
@@ -32,4 +38,4 @@ def test_generate_layout():
     assert test_layout['scene']['xaxis']['title'] == 'Residue'
 
 
-test_generate_layout()
+test_read_datafile()
