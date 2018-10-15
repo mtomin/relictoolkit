@@ -142,7 +142,7 @@ def test_totalgui_plot():
     testplot = r.TotalGui.Plot(testroot)
     assert testplot.data.label.cget('text') == 'Select datafile'
 
-
+@classmethod
 def test_totalgui_plot_generate_settings_pane():
     testroot = tk.Tk()
     testplot = TestPlot(testroot)
