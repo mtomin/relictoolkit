@@ -70,6 +70,43 @@ def read_datafile(data, startframe, endframe, starting_residue, end_residue, plo
     return datapoints
 
 
+def generate_layout(plottype):
+    if plottype == 'time':
+        xaxis_title = 'Time/ns'
+    elif plottype == 'frame_number':
+        xaxis_title = 'Frame'
+    elif plottype == 'averages':
+        xaxis_title = 'Average energy'
+    if plottype != 'averages':
+        layout = go.Layout(
+                title='Residue interactions',
+                scene=dict(
+                    xaxis=dict(title=xaxis_title,
+                               autorange=True),
+                    yaxis=dict(title='Residue',
+                               autorange=True),
+                    zaxis=dict(title='E/kJmol<sup>-1</sup>',
+                               autorange=True),
+                    aspectratio=dict(x=1, y=1, z=1),
+                ),
+                font=dict(family='Arial', size=18),
+            )
+
+    elif plottype == 'averages':
+        layout = go.Layout(
+            title='Average residue energies',
+            scene=dict(
+                xaxis=dict(title='Residue',
+                           autorange=True),
+                yaxis=dict(title='E<sub>avg</sub>/kJmol<sup>-1</sup>',
+                           autorange=True),
+            ),
+            font=dict(family='Arial', size=18),
+        )
+
+    return layout
+
+
 def main(config_filename='config_plot.ini'):
     # Load parameters from config
     filename = u.load_from_plot_config('files', 'datafile', config_filename)
@@ -83,7 +120,7 @@ def main(config_filename='config_plot.ini'):
 
     traces = list()
 
-    # read timestep from file
+    # Read timestep from file
     next(data)
     dt = int(data.readline().split()[1])
 
@@ -102,29 +139,18 @@ def main(config_filename='config_plot.ini'):
         y=y,
         z=z,
         connectgaps=False))
-
+    '''
     if plottype == 'time':
         xaxis_title = 'Time/ns'
     elif plottype == 'frame_number':
         xaxis_title = 'Frame'
     elif plottype == 'averages':
         xaxis_title = 'Average energy'
+    '''
     if plottype != 'averages':
         fig = {
             'data': traces,
-            'layout': go.Layout(
-                title='Residue interactions',
-                scene=dict(
-                    xaxis=dict(title=xaxis_title,
-                               autorange=True),
-                    yaxis=dict(title='Residue',
-                               autorange=True),
-                    zaxis=dict(title='E/kJmol<sup>-1</sup>',
-                               autorange=True),
-                    aspectratio=dict(x=1, y=1, z=1),
-                ),
-                font=dict(family='Arial', size=18),
-            )
+            'layout': generate_layout(plottype)
         }
         plot_display_options = dict(toImageButtonOptions=dict(width=2400, height=2400, filename='relic_plot'))
         plotly.offline.plot(fig, auto_open=True, config=plot_display_options, filename='relic_plot.html')
@@ -152,16 +178,7 @@ def main(config_filename='config_plot.ini'):
             connectgaps=False))]
         fig = {
             'data': traces,
-            'layout': go.Layout(
-                title='Average residue energies',
-                scene=dict(
-                    xaxis=dict(title='Residue',
-                               autorange=True),
-                    yaxis=dict(title='E<sub>avg</sub>/kJmol<sup>-1</sup>',
-                               autorange=True),
-                ),
-                font=dict(family='Arial', size=18),
-            )
+            'layout': generate_layout(plottype)
         }
         plot_display_options = dict(toImageButtonOptions=dict(width=2400, height=2400, filename='relic_plot'))
         plotly.offline.plot(fig, auto_open=True, config=plot_display_options, filename='relic_plot.html')

@@ -9,6 +9,7 @@ import MDAnalysis
 import relictoolkit.calculation as c
 import os
 standard_library.install_aliases()
+from time import sleep
 
 
 def test_add_lj_parameters():
@@ -17,6 +18,18 @@ def test_add_lj_parameters():
     system = MDAnalysis.Universe(topology, trajectory, format='mdcrd')
     c.add_lj_parameters(system)
     assert system.atoms[0].lj_energy == 3.66
+
+
+def test_timeit():
+    @c.timeit
+    def test_function():
+        pass
+    test_function()
+    with open('relic_logfile.log', 'r+') as logfile:
+        next(logfile)
+        line = logfile.readline()
+    assert line == 'Calculation finished successfully'
+    os.remove('relic_logfile.log')
 
 
 def test_process_trajectory():
@@ -49,3 +62,6 @@ def test_process_trajectory():
         assert output_line.split()[2] == '-3.22555'
     os.remove('output.dat_0')
     os.remove(os.path.dirname(__file__) + '/data/testtraj.mdcrd')
+
+
+test_timeit()

@@ -17,3 +17,19 @@ def test_read_datafile():
         dt = int(data.readline().split()[1])
         datapoints = p.read_datafile(data, 0, 4500, 1, 692, 'time', dt)
     assert datapoints == {'z': [0.0, None, -38.58544], 'y': [1.0, None, 692.0], 'step': 4500, 'x': [0.0, None, 2.25]}
+
+
+def test_generate_layout():
+    test_layout = p.generate_layout('time')
+    assert test_layout['title'] == 'Residue interactions'
+    assert test_layout['scene']['zaxis']['title'] == 'E/kJmol<sup>-1</sup>'
+    assert test_layout['scene']['xaxis']['title'] == 'Time/ns'
+
+    test_layout = p.generate_layout('frame_number')
+    assert test_layout['scene']['xaxis']['title'] == 'Frame'
+
+    test_layout = p.generate_layout('averages')
+    assert test_layout['scene']['xaxis']['title'] == 'Residue'
+
+
+test_generate_layout()
