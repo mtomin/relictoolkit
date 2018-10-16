@@ -69,6 +69,10 @@ def test_load_plot_config():
     assert u.load_from_plot_config('parameters', 'endframe', test_config_filename) == '4'
     assert u.load_from_plot_config('parameters', 'end_residue', test_config_filename) == '5'
 
+    config.set('files', 'datafile', '/data/test_output.out')
+    with open(test_config_filename, 'w+') as f:
+        config.write(f)
+
 
 def test_load_plot_config_defaults():
     test_config_filename = os.path.dirname(__file__)+'/data/test_config_plot_defaults.ini'

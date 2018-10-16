@@ -9,6 +9,7 @@ import tkinter as tk
 from tkinter import ttk
 from configparser import ConfigParser
 import os
+import mock
 standard_library.install_aliases()
 
 
@@ -90,6 +91,12 @@ class TestGui(object):
             self.box_state.set(value)
 
 
+class Testoutbutton(tk.Button):
+    def __init__(self, tab):
+        tk.Button.__init__(self, master=tab)
+        self.filename = tk.StringVar()
+
+
 def test_totalgui_browsebutton():
     testtab = ttk.Frame()
     testbutton = r.TotalGui.BrowseButton('testbutton', testtab)
@@ -142,6 +149,7 @@ def test_totalgui_plot():
     testplot = r.TotalGui.Plot(testroot)
     assert testplot.data.label.cget('text') == 'Select datafile'
 
+
 @classmethod
 def test_totalgui_plot_generate_settings_pane():
     testroot = tk.Tk()
@@ -172,3 +180,34 @@ def test_generate_plot_config():
     assert config.get('parameters', 'plot_type') == 'plottype'
     assert config.get('parameters', 'end_residue') == 'end_residue'
     os.remove('config_plot.ini')
+
+
+@mock.patch('tkinter.filedialog.askopenfilenames')
+def test_browse_trajectory(askopenfilenames_mock):
+    askopenfilenames_mock.return_value = ['testtrajname.ext']
+    test_trajname = r.browse_trajectory()
+    assert test_trajname == 'testtrajname.ext'
+
+
+@mock.patch('tkinter.filedialog.askopenfilenames', side_effect=[[], ['testtopname.ext']])
+def test_browse_topology(askopenfilenames_mock):
+    test_topname = r.browse_topology()
+    assert test_topname is None
+    test_topname = r.browse_topology()
+    assert test_topname == 'testtopname.ext'
+
+
+@mock.patch('tkinter.filedialog.asksaveasfilename')
+def test_set_output(asksaveasfilename_mock):
+    testtab = ttk.Frame()
+    outbutton = Testoutbutton(testtab)
+    asksaveasfilename_mock.return_value = 'test_out.out'
+    r.set_output(outbutton)
+    assert outbutton.filename.get() == 'test_out.out'
+
+
+@mock.patch('tkinter.filedialog.askopenfilenames')
+def test_browse_input(askopenfilenames_mock):
+    askopenfilenames_mock.return_value = ['input.in']
+    test_input = r.browse_input()
+    assert test_input == 'input.in'
