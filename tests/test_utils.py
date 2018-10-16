@@ -127,6 +127,9 @@ def test_check_plot_params():
     config = ConfigParser()
     config_filename = os.path.dirname(__file__) + '/data/test_config_plot.ini'
     config.read(config_filename)
+    config.set('files', 'datafile', os.path.dirname(__file__) + '/data/test_output.out')
+    with open(config_filename, 'w+') as configfile:
+        config.write(configfile)
     assert u.check_plot_params(config, config_filename) == ''
     config.set('parameters', 'startframe', 'asdf')
     with open(config_filename, 'w+') as f:
@@ -137,6 +140,10 @@ def test_check_plot_params():
         config.write(f)
     config.set('files', 'datafile', 'teststr.ini')
     assert u.check_plot_params(config, config_filename) == 'File not found!'
+
+    config.set('files', 'datafile', '/data/test_output.out')
+    with open(config_filename, 'w+') as configfile:
+        config.write(configfile)
 
 
 @mock.patch('relictoolkit.utils.electrostatic_energy')
