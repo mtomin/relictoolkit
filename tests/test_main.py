@@ -97,6 +97,10 @@ class Testoutbutton(tk.Button):
         self.filename = tk.StringVar()
 
 
+def do_nothing(*args):
+    pass
+
+
 def test_totalgui_browsebutton():
     testtab = ttk.Frame()
     testbutton = r.TotalGui.BrowseButton('testbutton', testtab)
@@ -211,3 +215,37 @@ def test_browse_input(askopenfilenames_mock):
     askopenfilenames_mock.return_value = ['input.in']
     test_input = r.browse_input()
     assert test_input == 'input.in'
+
+
+@mock.patch('relictoolkit.main.check_params', side_effect=['', 'random error'])
+@mock.patch('relictoolkit.calculation.main', side_effect=do_nothing)
+@mock.patch('relictoolkit.main.generate_config', side_effect=do_nothing)
+@mock.patch('relictoolkit.main.showerror', side_effect=do_nothing)
+@mock.patch('relictoolkit.main.showinfo', side_effect=do_nothing)
+def test_run_calculation(mock_showinfo, mock_showerror, mock_calculation, mock_generate_config, mock_check_params):
+    testgui = TestGui()
+    testgui.data.filename.set('testconfig.ini')
+    assert mock_showinfo.call_args is None
+    r.run_calculation(testgui)
+    assert mock_showinfo.call_args[0][0] == 'Done'
+    assert mock_showinfo.call_args[0][1] == 'Calculation completed successfully!'
+    r.run_calculation(testgui)
+    assert mock_showerror.call_args[0][0] == 'Error'
+    assert mock_showerror.call_args[0][1] == 'random error'
+
+
+@mock.patch('relictoolkit.main.check_plot_params', side_effect=['', 'random error'])
+@mock.patch('relictoolkit.plotting.main', side_effect=do_nothing)
+@mock.patch('relictoolkit.main.generate_plot_config', side_effect=do_nothing)
+@mock.patch('relictoolkit.main.showerror', side_effect=do_nothing)
+@mock.patch('relictoolkit.main.showinfo', side_effect=do_nothing)
+def test_run_plotting(mock_showinfo, mock_showerror, mock_generate_plot_config, mock_plotting, mock_check_plot_params):
+    testgui = TestGui()
+    testgui.data.filename.set('testconfig.ini')
+    assert mock_showinfo.call_args is None
+    r.run_plotting(testgui)
+    assert mock_showinfo.call_args is None
+    r.run_plotting(testgui)
+    print(mock_showerror.call_args)
+    assert mock_showerror.call_args[0][0] == 'Error'
+    assert mock_showerror.call_args[0][1] == 'random error'
