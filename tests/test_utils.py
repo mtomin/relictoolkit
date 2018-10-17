@@ -10,6 +10,7 @@ import MDAnalysis
 from configparser import ConfigParser
 import os
 import mock
+import shutil
 standard_library.install_aliases()
 
 
@@ -94,33 +95,43 @@ def test_load_plot_config_defaults():
 
 
 def test_check_params():
-    config = ConfigParser()
-    config_filename = os.path.dirname(__file__) + '/data/test_config.ini'
-    config.read(config_filename)
-    assert u.check_params(config) == 'Topology file missing!'
-    config.set('files', 'topology', os.path.dirname(__file__) + '/data/testtop.prmtop')
-    config.set('files', 'trajectories', os.path.dirname(__file__) + '/data/testtraj.xcrd')
-    assert u.check_params(config, config_filename) == ''
-    config.set('parameters', 'mask1', 'klj')
-    assert u.check_params(config, config_filename) == 'Mask1 error!'
-    config.set('parameters', 'mask1', 'resid 1 and resid 2')
-    assert u.check_params(config, config_filename) == 'Mask1 contains no atoms!'
-    config.set('parameters', 'mask1', 'resid 1')
-    config.set('parameters', 'mask2', 'klj')
-    assert u.check_params(config, config_filename) == 'Mask2 error!'
-    config.set('parameters', 'mask2', 'resid 1 and resid 2')
-    assert u.check_params(config, config_filename) == 'Mask2 contains no atoms!'
-    config.set('parameters', 'mask2', 'resid 2')
-    config.set('parameters', 'ncores', '300')
-    with open(config_filename, 'w+') as f:
-        config.write(f)
-    assert u.check_params(config, config_filename).split('(')[0] == \
-           'Number of cores specified higher than available number of cores '
-    config.set('parameters', 'ncores', '1')
-    config.set('files', 'topology', '/testfolder/testtopology.prmtop')
-    config.set('files', 'trajectories', '/testfolder/testtrajectory.xcrd')
-    with open(config_filename, 'w+') as f:
-        config.write(f)
+    shutil.copyfile(os.path.dirname(__file__) + '/data/test_config.ini',
+                    os.path.dirname(__file__) + '/data/test_config.ini_bak')
+    try:
+        config = ConfigParser()
+        config_filename = os.path.dirname(__file__) + '/data/test_config.ini'
+        config.read(config_filename)
+        assert u.check_params(config) == 'Topology file missing!'
+        config.set('files', 'topology', os.path.dirname(__file__) + '/data/testtop.prmtop')
+        config.set('files', 'trajectories', os.path.dirname(__file__) + '/data/testtraj.xcrd')
+        assert u.check_params(config, config_filename) == ''
+        config.set('parameters', 'mask1', 'klj')
+        assert u.check_params(config, config_filename) == 'Mask1 error!'
+        config.set('parameters', 'mask1', 'resid 1 and resid 2')
+        assert u.check_params(config, config_filename) == 'Mask1 contains no atoms!'
+        config.set('parameters', 'mask1', 'resid 1')
+        config.set('parameters', 'mask2', 'klj')
+        assert u.check_params(config, config_filename) == 'Mask2 error!'
+        config.set('parameters', 'mask2', 'resid 1 and resid 2')
+        assert u.check_params(config, config_filename) == 'Mask2 contains no atoms!'
+        config.set('parameters', 'mask2', 'resid 2')
+        config.set('parameters', 'ncores', '300')
+        with open(config_filename, 'w+') as f:
+            config.write(f)
+        assert u.check_params(config, config_filename).split('(')[0] == \
+               'Number of cores specified higher than available number of cores '
+
+        assert u.check_params(config, config_filename).split('(')[0] == 'Cutoff must be a number!'
+        config.set('parameters', 'ncores', '1')
+        config.set('parameters', 'cutoff', 'asd')
+        with open(config_filename, 'w+') as f:
+            config.write(f)
+
+        shutil.move(os.path.dirname(__file__) + '/data/test_config.ini_bak',
+                    os.path.dirname(__file__) + '/data/test_config.ini')
+    except:
+        shutil.move(os.path.dirname(__file__) + '/data/test_config.ini_bak',
+                    os.path.dirname(__file__) + '/data/test_config.ini')
 
 
 def test_check_plot_params():
@@ -201,4 +212,3 @@ def test_tail():
         print('the end', file=testtail)
         assert u.tail(testtail)[0] == 'the end\n'
         os.remove('testtail.dat')
-
