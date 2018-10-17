@@ -56,7 +56,9 @@ def test_load_config_defaults():
     assert u.load_from_config('parameters', 'stride', defaults_config) == ['1000', True]
 
 
-def test_load_plot_config():
+@mock.patch('relictoolkit.utils.tail')
+def test_load_plot_config(mock_tail):
+    mock_tail.return_value = ['4500       692         -38.58544    0.00000  -38.58544\n']
     test_config_filename = os.path.dirname(__file__)+'/data/test_config_plot.ini'
     config = ConfigParser()
     config.read(test_config_filename)
@@ -75,7 +77,9 @@ def test_load_plot_config():
         config.write(f)
 
 
-def test_load_plot_config_defaults():
+@mock.patch('relictoolkit.utils.tail')
+def test_load_plot_config_defaults(mock_tail):
+    mock_tail.return_value = ['4500       692         -38.58544    0.00000  -38.58544\n']
     test_config_filename = os.path.dirname(__file__)+'/data/test_config_plot_defaults.ini'
     config = ConfigParser()
     config.read(test_config_filename)
@@ -128,9 +132,11 @@ def test_check_params():
                     os.path.dirname(__file__) + '/data/test_config.ini')
 
 
-def test_check_plot_params():
+@mock.patch('relictoolkit.utils.tail')
+def test_check_plot_params(mock_tail):
     shutil.copyfile(os.path.dirname(__file__) + '/data/test_config_plot.ini',
                     os.path.dirname(__file__) + '/data/test_config_plot.ini_bak')
+    mock_tail.return_value = ['4500       692         -38.58544    0.00000  -38.58544\n']
     try:
         config = ConfigParser()
         config_filename = os.path.dirname(__file__) + '/data/test_config_plot.ini'
@@ -155,8 +161,11 @@ def test_check_plot_params():
                     os.path.dirname(__file__) + '/data/test_config_plot.ini')
 
 
+@mock.patch('relictoolkit.utils.load_from_config', side_effect=[['True'], [5]])
 @mock.patch('relictoolkit.utils.electrostatic_energy')
-def test_interdomain_interactions(electrostatic_energy_mock):
+@mock.patch('relictoolkit.utils.vdw_energy')
+def test_interdomain_interactions(vdw_energy_mock, electrostatic_energy_mock, load_from_config_mock):
+    vdw_energy_mock.return_value = 1
     electrostatic_energy_mock.return_value = -1
     topology = os.path.dirname(__file__) + '/data/testtop.prmtop'
     trajectory = os.path.dirname(__file__) + '/data/testtraj.xcrd'
@@ -164,6 +173,7 @@ def test_interdomain_interactions(electrostatic_energy_mock):
     domain1 = system.select_atoms('resid 1')
     domain2 = system.select_atoms('resid 3')
     interaction = u.interdomain_interactions(domain1, domain2, 1)
+    print(interaction)
     assert interaction[0].split()[2] == '-285.00000'
 
 
@@ -210,3 +220,5 @@ def test_tail():
         print('the end', file=testtail)
         assert u.tail(testtail)[0] == 'the end\n'
         os.remove('testtail.dat')
+
+test_interdomain_interactions()
