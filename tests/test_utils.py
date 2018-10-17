@@ -192,3 +192,13 @@ def test_process_frame(interdomain_interactions_mock):
         line = testoutput.readline()
     assert line == '0 1 2 0 2\n'
     os.remove('test_frameprocess.dat')
+
+
+def test_tail():
+    with open('testtail.dat', 'w+') as testtail:
+        for i in range(0, 5):
+            print('%s\n' % i, file=testtail)
+        print('the end', file=testtail)
+        assert u.tail(testtail)[0] == 'the end\n'
+        os.remove('testtail.dat')
+
