@@ -112,4 +112,22 @@ def test_generate_figure_data_mplt(calculate_averages_mock, read_datafile_mock):
 
     os.remove(os.path.dirname(__file__) + '/data/test_config_plot_temp.ini')
 
-test_generate_figure_data_plotly()
+
+def do_nothing(*args, **kwargs):
+    pass
+
+
+@mock.patch('relictoolkit.utils.load_from_plot_config', side_effect=['averages', 'False', 'time', 'True'])
+@mock.patch('plotly.offline.plot', side_effect=do_nothing)
+@mock.patch('relictoolkit.plotting.generate_figure_data_mplt')
+@mock.patch('matplotlib.pyplot.figure', 'show')
+@mock.patch('relictoolkit.plotting.generate_figure_data_plotly', side_effect=do_nothing)
+def test_plotting_main(generate_data_plotly, pyplot_figure_show_mock, generate_data_mplt_mock, load_from_plot_config_mock):
+    p.main()
+    assert pyplot_figure_show_mock.call_args[0][0] == 'config_plot.ini'
+    assert generate_data_mplt_mock.call_args is None
+    assert load_from_plot_config_mock.call_args[0] == ('parameters', 'interactive', 'config_plot.ini')
+
+    p.main()
+    assert pyplot_figure_show_mock.call_args[0][0] == 'config_plot.ini'
+    assert load_from_plot_config_mock.call_args[0] == ('parameters', 'interactive', 'config_plot.ini')
