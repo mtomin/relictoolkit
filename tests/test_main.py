@@ -77,6 +77,7 @@ class TestGui(object):
         self.endframe = TestGui.TestGuivarparameters('endframe')
         self.starting_residue = TestGui.TestGuivarparameters('starting_residue')
         self.end_residue = TestGui.TestGuivarparameters('end_residue')
+        self.interactive = TestGui.TestGuivarparameters('interactive')
 
     class TestGuivarfiles(tk.StringVar):
         def __init__(self, value):
