@@ -104,7 +104,8 @@ def test_check_params():
 
     config = ConfigParser()
     config_filename = os.path.dirname(__file__) + '/data/test_config_temp.ini'
-    assert u.check_params(config) == 'Topology file missing!'
+    config.read(config_filename)
+    assert u.check_params(config, config_filename) == 'Topology file missing!'
     config.set('files', 'topology', os.path.dirname(__file__) + '/data/testtop.prmtop')
     config.set('files', 'trajectories', os.path.dirname(__file__) + '/data/testtraj.xcrd')
     assert u.check_params(config, config_filename) == ''
@@ -182,7 +183,7 @@ def test_write_logfile_header():
 
     with open('testlogfile', 'r+') as testlogfile:
         assert testlogfile.readline()[0:19] == 'Calculation started'
-    os.remove('tesstlogfile')
+    os.remove('testlogfile')
 
 
 def test_load_partial_traj():
