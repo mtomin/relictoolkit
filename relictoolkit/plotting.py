@@ -9,6 +9,10 @@ from future import standard_library
 import plotly.offline
 import plotly.graph_objs as go
 import relictoolkit.utils as u
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
+import matplotlib as mpl
+import numpy as np
 standard_library.install_aliases()
 
 
@@ -64,10 +68,11 @@ def read_datafile(data, startframe, endframe, starting_residue, end_residue, plo
         if frame > endframe:
             break
 
-    datapoints={'x': x,
-                'y': y,
-                'z': z,
-                'step': step}
+    datapoints = {'x': x,
+                  'y': y,
+                  'z': z,
+                  'step': step}
+
     return datapoints
 
 
@@ -129,7 +134,7 @@ def calculate_averages(filename, datapoints, startframe, endframe, starting_resi
     return results
 
 
-def generate_figure_data(config_filename):
+def generate_figure_data_plotly(config_filename):
     # Load parameters from config
     filename = u.load_from_plot_config('files', 'datafile', config_filename)
     plottype = u.load_from_plot_config('parameters', 'plot_type', config_filename)
@@ -184,17 +189,86 @@ def generate_figure_data(config_filename):
     return fig
 
 
+def generate_figure_data_mplt(config_filename):
+    # Load parameters from config
+    filename = u.load_from_plot_config('files', 'datafile', config_filename)
+    plottype = u.load_from_plot_config('parameters', 'plot_type', config_filename)
+    startframe = int(u.load_from_plot_config('parameters', 'startframe', config_filename))
+    endframe = int(u.load_from_plot_config('parameters', 'endframe', config_filename))
+    starting_residue = int(u.load_from_plot_config('parameters', 'starting_residue', config_filename))
+    end_residue = int(u.load_from_plot_config('parameters', 'end_residue', config_filename))
+
+    data = open(filename)
+
+    # Read timestep from file
+    next(data)
+    dt = int(data.readline().split()[1])
+
+    datapoints = read_datafile(data, startframe, endframe, starting_residue, end_residue, plottype, dt)
+    data.close()
+    fig = plt.figure(facecolor='w')
+    mpl.rcParams['savefig.dpi'] = 1000
+    xcrds = list()
+    ycrds = list()
+    zcrds = list()
+    for i,j,k in zip(datapoints['x'], datapoints['y'], datapoints['z']):
+        print(i,j,k)
+    if plottype == 'averages':
+        averages_data = calculate_averages(filename, datapoints, startframe, endframe, starting_residue, end_residue)
+        for x, y in zip(averages_data['residues'], averages_data['residue_energies']):
+            xcrds.append(x)
+            ycrds.append(y)
+
+        ax = fig.add_subplot(111)
+        ax.plot(xcrds, ycrds)
+        ax.set_title('Average residue energies')
+        ax.set_xlabel('Residue')
+        ax.set_ylabel('E$_{avg}$/kJmol$^{-1}$')
+        fig.tight_layout()
+    else:
+        ax = fig.add_subplot(111, projection='3d')
+        for x, y, z in zip(datapoints['x'], datapoints['y'], datapoints['z']):
+
+            if x is not None:
+                xcrds.append(x)
+                ycrds.append(y)
+                zcrds.append(z)
+            else:
+                xnew, ynew = np.meshgrid(xcrds, ycrds)
+                znew = np.zeros((len(ycrds), len(xcrds)))
+                for i in range(len(zcrds)):
+                    znew[i] = zcrds[i]
+                xcrds = list()
+                ycrds = list()
+                zcrds = list()
+                ax.plot_wireframe(xnew, ynew, znew, lw=0.25)
+
+        ax.set_title('Residue interactions')
+        if plottype == 'time':
+            ax.set_xlabel('Time/ns')
+        elif plottype == 'frame_number':
+            ax.set_xlabel('Frame')
+        ax.set_ylabel('Residue')
+        ax.set_zlabel('E/kJmol$^{-1}$')
+    ax.autoscale(enable=True, axis='both')
+    return fig
+
+
 def main(config_filename='config_plot.ini'):
     plottype = u.load_from_plot_config('parameters', 'plot_type', config_filename)
-    figure = generate_figure_data(config_filename)
+    interactive = u.load_from_plot_config('parameters', 'interactive', config_filename)
+    if interactive == 'False':
+        figure = generate_figure_data_mplt(config_filename)
+        figure.show()
+    else:
+        figure = generate_figure_data_plotly(config_filename)
+        if plottype != 'averages':
+            plot_display_options = dict(toImageButtonOptions=dict(width=2400, height=2400, filename='relic_plot'))
+            plotly.offline.plot(figure, auto_open=True, config=plot_display_options, filename='relic_plot.html')
 
-    if plottype != 'averages':
-        plot_display_options = dict(toImageButtonOptions=dict(width=2400, height=2400, filename='relic_plot'))
-        plotly.offline.plot(figure, auto_open=True, config=plot_display_options, filename='relic_plot.html')
-
-    elif plottype == 'averages':
-        plot_display_options = dict(toImageButtonOptions=dict(width=2400, height=2400, filename='relic_plot'))
-        plotly.offline.plot(figure, auto_open=True, config=plot_display_options, filename='relic_plot.html')
+        elif plottype == 'averages':
+            plot_display_options = dict(toImageButtonOptions=dict(width=2400, height=2400, filename='relic_plot'))
+            plotly.offline.plot(figure, auto_open=True, config=plot_display_options, filename='relic_plot.html')
 
 
 if __name__ == '__main__':

@@ -246,6 +246,7 @@ class TotalGui(object):
             self.data.configure(text='Browse...', command=lambda: self.data.filename.set(browse_input()))
 
             self.plottype = tk.StringVar()
+            self.interactive = tk.StringVar()
             self.startingframe = TotalGui.EntryBox('Starting frame (default 0)', self)
             self.endframe = TotalGui.EntryBox('Final frame (default last)', self)
             self.starting_residue = TotalGui.EntryBox('Starting residue (default 1)', self)
@@ -272,41 +273,54 @@ class TotalGui(object):
 
             if self.data.filename.get() != 'None' and self.data.filename.get() != '':
 
+                # Interactive
+                interactive_label = tk.Label(self, text='Select plot drawing method:')
+                interactive_label.grid(row=1, columnspan=3, sticky='n')
+                matplotlib_radiobutton = ttk.Radiobutton(self, text='Non-interactive (matplotlib)',
+                                                         variable=self.interactive,
+                                                         value='False')
+                matplotlib_radiobutton.grid_configure(row=2, columnspan=3, sticky='w', padx=250, pady=(10, 10))
+                plotly_radiobutton = ttk.Radiobutton(self, text='Interactive (Plotly)',
+                                                     variable=self.interactive,
+                                                     value='True')
+                plotly_radiobutton.grid_configure(row=2, columnspan=3, sticky='e', padx=250, pady=(10, 10))
+                self.interactive.set('False')
+
                 # Plot type layout
                 plot_type_label = tk.Label(self, text='Plot type:')
-                plot_type_label.grid(row=1, columnspan=3, sticky='n')
+                plot_type_label.grid(row=3, columnspan=3, sticky='n')
 
                 time_radiobutton = ttk.Radiobutton(self,
                                                    text='Interactions vs. time',
                                                    variable=self.plottype,
                                                    value='time')
-                time_radiobutton.grid_configure(row=2, columnspan=3, sticky='w', padx=100, pady=(5, 20))
+                time_radiobutton.grid_configure(row=4, columnspan=3, sticky='w', padx=100, pady=(5, 20))
 
                 frame_radiobutton = ttk.Radiobutton(self,
                                                     text='Interactions vs. frame number',
                                                     variable=self.plottype,
                                                     value='frame_number')
-                frame_radiobutton.grid_configure(row=2, columnspan=3, sticky='n', pady=(5, 20))
+                frame_radiobutton.grid_configure(row=4, columnspan=3, sticky='n', pady=(5, 20))
 
                 averages_radiobutton = ttk.Radiobutton(self,
                                                        text='Average energy per residue',
                                                        variable=self.plottype,
                                                        value='averages')
-                averages_radiobutton.grid_configure(row=2, columnspan=3, sticky='e', padx=(0, 100), pady=(5, 20))
+                averages_radiobutton.grid_configure(row=4, columnspan=3, sticky='e', padx=(0, 100), pady=(5, 20))
                 self.plottype.set('time')
 
                 # Plot settings layout
-                self.startingframe.grid_configure(row=3, column=1)
-                self.startingframe.label.grid_configure(row=3, column=0)
+                self.startingframe.grid_configure(row=5, column=1)
+                self.startingframe.label.grid_configure(row=5, column=0)
 
-                self.endframe.grid_configure(row=4, column=1)
-                self.endframe.label.grid_configure(row=4, column=0)
+                self.endframe.grid_configure(row=6, column=1)
+                self.endframe.label.grid_configure(row=6, column=0)
 
-                self.starting_residue.grid_configure(row=5, column=1)
-                self.starting_residue.label.grid_configure(row=5, column=0)
+                self.starting_residue.grid_configure(row=7, column=1)
+                self.starting_residue.label.grid_configure(row=7, column=0)
 
-                self.end_residue.grid_configure(row=6, column=1)
-                self.end_residue.label.grid_configure(row=6, column=0)
+                self.end_residue.grid_configure(row=8, column=1)
+                self.end_residue.label.grid_configure(row=8, column=0)
 
                 # Create and set up Run and Quit buttons
                 run_plot = TotalGui.RunButton('Run', self)
@@ -445,6 +459,7 @@ def generate_plot_config(gui, config):
         'datafile': gui.data.filename.get()
     }
     config['parameters'] = {
+        'interactive': gui.interactive.get(),
         'plot_type': gui.plottype.get(),
         'startframe': gui.startingframe.get(),
         'endframe': gui.endframe.get(),

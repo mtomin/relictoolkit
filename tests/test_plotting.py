@@ -10,6 +10,7 @@ from configparser import ConfigParser
 import os
 import relictoolkit.plotting as p
 import mock
+import numpy as np
 standard_library.install_aliases()
 
 
@@ -49,7 +50,7 @@ def test_calculate_averages():
 
 @mock.patch('relictoolkit.plotting.read_datafile')
 @mock.patch('relictoolkit.plotting.calculate_averages')
-def test_generate_figure_data(calculate_averages_mock, read_datafile_mock):
+def test_generate_figure_data_plotly(calculate_averages_mock, read_datafile_mock):
 
     # Set path in confg_plot.ini
     test_config_filename = os.path.dirname(__file__) + '/data/test_config_plot.ini'
@@ -62,12 +63,8 @@ def test_generate_figure_data(calculate_averages_mock, read_datafile_mock):
     read_datafile_mock.return_value = {
         'z': [0.0, None, -38.58544], 'y': [1.0, None, 692.0], 'step': 4500, 'x': [0.0, None, 2.25]
     }
-    calculate_averages_mock.return_value = {
-            'residues': [1, 692],
-            'residue_energies': [0, -38.58544]
-        }
 
-    testfigure = p.generate_figure_data(os.path.dirname(__file__) + '/data/test_config_plot.ini')
+    testfigure = p.generate_figure_data_plotly(os.path.dirname(__file__) + '/data/test_config_plot.ini')
 
     assert testfigure['layout']['title'] == 'Average residue energies'
     assert testfigure['data'][0]['x'] == (1, 692)
@@ -76,3 +73,26 @@ def test_generate_figure_data(calculate_averages_mock, read_datafile_mock):
     config.set('files', 'datafile', '/data/test_output.out')
     with open(test_config_filename, 'w+') as f:
         config.write(f)
+
+
+@mock.patch('relictoolkit.plotting.read_datafile')
+@mock.patch('relictoolkit.plotting.calculate_averages')
+def test_generate_figure_data_mplt(calculate_averages_mock, read_datafile_mock):
+
+    test_config_filename = os.path.dirname(__file__) + '/data/test_config_plot.ini'
+    config = ConfigParser()
+    config.read(test_config_filename)
+    config.set('files', 'datafile', os.path.dirname(__file__) + '/data/test_output.out')
+    with open(test_config_filename, 'w+') as f:
+        config.write(f)
+
+    calculate_averages_mock.return_value = {
+        'residues': [0.0, 1.0, 2.0],
+        'residue_energies': [0.0, 5.0, 10.0]
+    }
+
+    testfigure = p.generate_figure_data_mplt(test_config_filename)
+    testfigure.show()
+    assert testfigure.gca().lines[0].get_xdata()[1] == 1.0
+    assert testfigure.gca().lines[0].get_ydata()[2] == 10.0
+

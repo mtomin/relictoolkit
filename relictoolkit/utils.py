@@ -258,6 +258,7 @@ def load_from_plot_config(section, parameter, filename='config_plot.ini'):
         last_line = tail(results)
 
     default_values = {
+        'interactive': 'True',
         'plot_type': 'time',
         'startframe': 0,
         'endframe': int(last_line[0].split()[0]),
