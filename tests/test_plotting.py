@@ -81,7 +81,7 @@ def test_generate_figure_data_plotly(calculate_averages_mock, read_datafile_mock
         config.write(f)
 
     testfigure = p.generate_figure_data_plotly(os.path.dirname(__file__) + '/data/test_config_plot_temp.ini')
-    assert testfigure['data']['z'] == (0.0, None, -38.58544)
+    assert testfigure['data'][0]['z'] == (0.0, None, -38.58544)
 
     os.remove(os.path.dirname(__file__) + '/data/test_config_plot_temp.ini')
 
@@ -111,3 +111,5 @@ def test_generate_figure_data_mplt(calculate_averages_mock, read_datafile_mock):
     assert testfigure.gca().lines[0].get_ydata()[2] == 10.0
 
     os.remove(os.path.dirname(__file__) + '/data/test_config_plot_temp.ini')
+
+test_generate_figure_data_plotly()

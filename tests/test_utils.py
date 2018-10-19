@@ -103,7 +103,7 @@ def test_check_params():
                     os.path.dirname(__file__) + '/data/test_config_temp.ini')
 
     config = ConfigParser()
-    config_filename = os.path.dirname(__file__) + '/data/test_config_temp'
+    config_filename = os.path.dirname(__file__) + '/data/test_config_temp.ini'
     assert u.check_params(config) == 'Topology file missing!'
     config.set('files', 'topology', os.path.dirname(__file__) + '/data/testtop.prmtop')
     config.set('files', 'trajectories', os.path.dirname(__file__) + '/data/testtraj.xcrd')
