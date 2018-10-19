@@ -100,65 +100,57 @@ def test_load_plot_config_defaults(mock_tail):
 
 def test_check_params():
     shutil.copyfile(os.path.dirname(__file__) + '/data/test_config.ini',
-                    os.path.dirname(__file__) + '/data/test_config.ini_bak')
-    try:
-        config = ConfigParser()
-        config_filename = os.path.dirname(__file__) + '/data/test_config.ini'
-        config.read(config_filename)
-        assert u.check_params(config) == 'Topology file missing!'
-        config.set('files', 'topology', os.path.dirname(__file__) + '/data/testtop.prmtop')
-        config.set('files', 'trajectories', os.path.dirname(__file__) + '/data/testtraj.xcrd')
-        assert u.check_params(config, config_filename) == ''
-        config.set('parameters', 'mask1', 'klj')
-        assert u.check_params(config, config_filename) == 'Mask1 error!'
-        config.set('parameters', 'mask1', 'resid 1 and resid 2')
-        assert u.check_params(config, config_filename) == 'Mask1 contains no atoms!'
-        config.set('parameters', 'mask1', 'resid 1')
-        config.set('parameters', 'mask2', 'klj')
-        assert u.check_params(config, config_filename) == 'Mask2 error!'
-        config.set('parameters', 'mask2', 'resid 1 and resid 2')
-        assert u.check_params(config, config_filename) == 'Mask2 contains no atoms!'
-        config.set('parameters', 'mask2', 'resid 2')
-        config.set('parameters', 'ncores', '300')
-        with open(config_filename, 'w+') as f:
-            config.write(f)
-        assert u.check_params(config, config_filename).split('(')[0] == \
-               'Number of cores specified higher than available number of cores '
+                    os.path.dirname(__file__) + '/data/test_config_temp.ini')
 
-        shutil.move(os.path.dirname(__file__) + '/data/test_config.ini_bak',
-                    os.path.dirname(__file__) + '/data/test_config.ini')
-    except:
-        shutil.move(os.path.dirname(__file__) + '/data/test_config.ini_bak',
-                    os.path.dirname(__file__) + '/data/test_config.ini')
+    config = ConfigParser()
+    config_filename = os.path.dirname(__file__) + '/data/test_config_temp'
+    assert u.check_params(config) == 'Topology file missing!'
+    config.set('files', 'topology', os.path.dirname(__file__) + '/data/testtop.prmtop')
+    config.set('files', 'trajectories', os.path.dirname(__file__) + '/data/testtraj.xcrd')
+    assert u.check_params(config, config_filename) == ''
+    config.set('parameters', 'mask1', 'klj')
+    assert u.check_params(config, config_filename) == 'Mask1 error!'
+    config.set('parameters', 'mask1', 'resid 1 and resid 2')
+    assert u.check_params(config, config_filename) == 'Mask1 contains no atoms!'
+    config.set('parameters', 'mask1', 'resid 1')
+    config.set('parameters', 'mask2', 'klj')
+    assert u.check_params(config, config_filename) == 'Mask2 error!'
+    config.set('parameters', 'mask2', 'resid 1 and resid 2')
+    assert u.check_params(config, config_filename) == 'Mask2 contains no atoms!'
+    config.set('parameters', 'mask2', 'resid 2')
+    config.set('parameters', 'ncores', '300')
+    with open(config_filename, 'w+') as f:
+        config.write(f)
+    assert u.check_params(config, config_filename).split('(')[0] == \
+           'Number of cores specified higher than available number of cores '
+
+    os.remove(os.path.dirname(__file__) + '/data/test_config_temp.ini')
 
 
 @mock.patch('relictoolkit.utils.tail')
 def test_check_plot_params(mock_tail):
     shutil.copyfile(os.path.dirname(__file__) + '/data/test_config_plot.ini',
-                    os.path.dirname(__file__) + '/data/test_config_plot.ini_bak')
+                    os.path.dirname(__file__) + '/data/test_config_plot_temp.ini')
     mock_tail.return_value = ['4500       692         -38.58544    0.00000  -38.58544\n']
-    try:
-        config = ConfigParser()
-        config_filename = os.path.dirname(__file__) + '/data/test_config_plot.ini'
-        config.read(config_filename)
-        config.set('files', 'datafile', os.path.dirname(__file__) + '/data/test_output.out')
-        with open(config_filename, 'w+') as configfile:
-            config.write(configfile)
-        assert u.check_plot_params(config, config_filename) == ''
-        config.set('parameters', 'startframe', 'asdf')
-        with open(config_filename, 'w+') as f:
-            config.write(f)
-        assert u.check_plot_params(config, config_filename) == 'Starting frame must be an integer!'
-        config.set('parameters', 'startframe', '2')
-        with open(config_filename, 'w+') as f:
-            config.write(f)
-        config.set('files', 'datafile', 'teststr.ini')
-        assert u.check_plot_params(config, config_filename) == 'File not found!'
-        shutil.move(os.path.dirname(__file__) + '/data/test_config_plot.ini_bak',
-                    os.path.dirname(__file__) + '/data/test_config_plot.ini')
-    except:
-        shutil.move(os.path.dirname(__file__) + '/data/test_config_plot.ini_bak',
-                    os.path.dirname(__file__) + '/data/test_config_plot.ini')
+
+    config = ConfigParser()
+    config_filename = os.path.dirname(__file__) + '/data/test_config_plot_temp.ini'
+    config.read(config_filename)
+    config.set('files', 'datafile', os.path.dirname(__file__) + '/data/test_output.out')
+    with open(config_filename, 'w+') as configfile:
+        config.write(configfile)
+    assert u.check_plot_params(config, config_filename) == ''
+    config.set('parameters', 'startframe', 'asdf')
+    with open(config_filename, 'w+') as f:
+        config.write(f)
+    assert u.check_plot_params(config, config_filename) == 'Starting frame must be an integer!'
+    config.set('parameters', 'startframe', '2')
+    with open(config_filename, 'w+') as f:
+        config.write(f)
+    config.set('files', 'datafile', 'teststr.ini')
+    assert u.check_plot_params(config, config_filename) == 'File not found!'
+
+    os.remove(os.path.dirname(__file__) + '/data/test_config_plot_temp.ini')
 
 
 @mock.patch('relictoolkit.utils.load_from_config', side_effect=[['True'], [5]])
@@ -190,6 +182,7 @@ def test_write_logfile_header():
 
     with open('testlogfile', 'r+') as testlogfile:
         assert testlogfile.readline()[0:19] == 'Calculation started'
+    os.remove('tesstlogfile')
 
 
 def test_load_partial_traj():
@@ -220,5 +213,3 @@ def test_tail():
         print('the end', file=testtail)
         assert u.tail(testtail)[0] == 'the end\n'
         os.remove('testtail.dat')
-
-test_interdomain_interactions()
