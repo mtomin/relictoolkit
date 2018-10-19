@@ -76,9 +76,13 @@ def test_generate_figure_data_plotly(calculate_averages_mock, read_datafile_mock
         assert testfigure['data'][0]['x'] == (0.0, 1.0, 2.0)
         assert testfigure['data'][0]['y'] == (0.0, 5.0, 10.0)
 
-        config.set('files', 'datafile', '/data/test_output.out')
+        config.set('parameters', 'plot_type', 'time')
         with open(test_config_filename, 'w+') as f:
             config.write(f)
+
+        testfigure = p.generate_figure_data_plotly(os.path.dirname(__file__) + '/data/test_config_plot.ini')
+        assert testfigure['data']['z'] == (0.0, None, -38.58544)
+
         shutil.copy(os.path.dirname(__file__) + '/data/test_config_plot.ini_bak', os.path.dirname(__file__) +
                     '/data/test_config_plot.ini')
     except:
@@ -106,3 +110,5 @@ def test_generate_figure_data_mplt(calculate_averages_mock, read_datafile_mock):
     testfigure.show()
     assert testfigure.gca().lines[0].get_xdata()[1] == 1.0
     assert testfigure.gca().lines[0].get_ydata()[2] == 10.0
+
+test_generate_figure_data_plotly()
