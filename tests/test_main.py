@@ -187,6 +187,21 @@ def test_generate_plot_config():
     os.remove('config_plot.ini')
 
 
+@mock.patch('tkinter.ttk.Notebook.add')
+@mock.patch('relictoolkit.main.TotalGui.Calculate')
+@mock.patch('relictoolkit.main.TotalGui.Plot')
+@mock.patch('relictoolkit.main.TotalGui.Footer')
+def test_totalgui(mock_footer, mock_plot, mock_calculate, mock_add):
+    testroot = tk.Tk()
+    mock_footer.return_value = tk.Label()
+    mock_calculate.return_value = ttk.Frame(testroot)
+    mock_plot.return_value = ttk.Frame(testroot)
+    test_gui = r.TotalGui(testroot)
+    assert mock_add.call_args_list[0][1]['text'] == 'Calculate'
+    assert mock_add.call_args_list[1][1]['text'] == 'Plot'
+    assert test_gui.master.title() == 'RELIC toolkit'
+
+
 @mock.patch('tkinter.filedialog.askopenfilenames')
 def test_browse_trajectory(askopenfilenames_mock):
     askopenfilenames_mock.return_value = ['testtrajname.ext']
