@@ -59,7 +59,7 @@ def read_datafile(data, startframe, endframe, starting_residue, end_residue, plo
             z.append(None)
 
         if plottype == 'time':
-            x.append(float(line.split()[0])/(1000*dt))
+            x.append(float(line.split()[0])*dt/1000)
         elif plottype == 'frame_number':
             x.append(float(line.split()[0]))
         y.append(float(line.split()[1]))
@@ -120,9 +120,9 @@ def calculate_averages(filename, datapoints, startframe, endframe, starting_resi
     average_residue_energies = list()
     residues = list()
 
-    for residue in range(starting_residue, end_residue + 1):
+    for residue in range(starting_residue, end_residue):
         avg_res_energy = 0
-        for energy in datapoints['z'][residue - 1:len(datapoints['z']):num_of_residues + 1]:
+        for energy in datapoints['z'][residue - 1:len(datapoints['z']):num_of_residues]:
             avg_res_energy += energy
         avg_res_energy = avg_res_energy * datapoints['step'] / (endframe - startframe + datapoints['step'])
         residues.append(residue)
@@ -148,8 +148,7 @@ def generate_figure_data_plotly(config_filename):
     traces = list()
 
     # Read timestep from file
-    next(data)
-    dt = int(data.readline().split()[1])
+    dt = int(data.readline().split()[-1])
 
     datapoints = read_datafile(data, startframe, endframe, starting_residue, end_residue, plottype, dt)
     data.close()
@@ -201,8 +200,7 @@ def generate_figure_data_mplt(config_filename):
     data = open(filename)
 
     # Read timestep from file
-    next(data)
-    dt = int(data.readline().split()[1])
+    dt = int(data.readline().split()[-1])
 
     datapoints = read_datafile(data, startframe, endframe, starting_residue, end_residue, plottype, dt)
     data.close()
