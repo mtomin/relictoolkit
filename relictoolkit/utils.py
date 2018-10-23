@@ -105,7 +105,7 @@ def check_params(settings, filename='config.ini'):
         if ncores > multiprocessing.cpu_count():
             error_message = 'Number of cores specified higher than available number of cores (%s)'\
                             % multiprocessing.cpu_count()
-        elif ncores > number_frames_total // stride:
+        elif ncores > (number_frames_total // stride) +1:
                 error_message = 'Number of cores higher than number of frames!'
 
     if error_message == '':
@@ -371,17 +371,15 @@ def interdomain_interactions(domain1, domain2, frame_number):
     calculate_vdw = load_from_config('parameters', 'vdw')[0] == 'True'
     for residue in domain1.residues:
         if residue.resname != 'WAT':
-            neighbors = possible_neighbors.search(residue.atoms,
-                                                  float(load_from_config('parameters', 'cutoff')[0]), level='R')
+            neighbor_atoms = possible_neighbors.search(residue.atoms,
+                                                       float(load_from_config('parameters', 'cutoff')[0]), level='A')
             eelec = 0
             evdw = 0
-            for neighbor in neighbors:
-                if residue != neighbor:
-                    for residue_atom in residue.atoms:
-                        for neighbor_atom in neighbor.atoms:
-                            eelec += electrostatic_energy(residue_atom, neighbor_atom, domain1.dimensions)
-                            if calculate_vdw:
-                                evdw += vdw_energy(residue_atom, neighbor_atom, domain1.dimensions)
+            for residue_atom in residue.atoms:
+                for neighbor_atom in neighbor_atoms:
+                    eelec += electrostatic_energy(residue_atom, neighbor_atom, domain1.dimensions)
+                    if calculate_vdw:
+                        evdw += vdw_energy(residue_atom, neighbor_atom, domain1.dimensions)
             domain_interactions.append('{:<10d} {:<10d} {:>10.5f} {:>10.5f} {:>10.5f}'.format(
                 frame_number, residue.resid, eelec, evdw, eelec+evdw))
     return domain_interactions

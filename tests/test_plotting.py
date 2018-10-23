@@ -110,6 +110,14 @@ def test_generate_figure_data_mplt(calculate_averages_mock, read_datafile_mock):
     assert testfigure.gca().lines[0].get_xdata()[1] == 1.0
     assert testfigure.gca().lines[0].get_ydata()[2] == 10.0
 
+    config.set('parameters', 'plot_type', 'averages')
+    with open(test_config_filename, 'w+') as f:
+        config.write(f)
+
+    testfigure = p.generate_figure_data_mplt(test_config_filename)
+    assert testfigure.gca().lines[0].get_xdata()[1] == 1.0
+    assert testfigure.gca().lines[0].get_ydata()[2] == 10.0
+
     os.remove(os.path.dirname(__file__) + '/data/test_config_plot_temp.ini')
 
 

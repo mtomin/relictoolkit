@@ -211,8 +211,7 @@ def generate_figure_data_mplt(config_filename):
     xcrds = list()
     ycrds = list()
     zcrds = list()
-    for i,j,k in zip(datapoints['x'], datapoints['y'], datapoints['z']):
-        print(i,j,k)
+
     if plottype == 'averages':
         averages_data = calculate_averages(filename, datapoints, startframe, endframe, starting_residue, end_residue)
         for x, y in zip(averages_data['residues'], averages_data['residue_energies']):
@@ -242,6 +241,14 @@ def generate_figure_data_mplt(config_filename):
                 ycrds = list()
                 zcrds = list()
                 ax.plot_wireframe(xnew, ynew, znew, lw=0.25)
+
+        # Add last plot
+        xnew, ynew = np.meshgrid(xcrds, ycrds)
+        znew = np.zeros((len(ycrds), len(xcrds)))
+        for i in range(len(zcrds)):
+            znew[i] = zcrds[i]
+
+        ax.plot_wireframe(xnew, ynew, znew, lw=0.25)
 
         ax.set_title('Residue interactions')
         if plottype == 'time':

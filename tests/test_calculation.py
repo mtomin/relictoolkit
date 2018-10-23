@@ -46,7 +46,6 @@ def do_nothing(*args):
 @mock.patch('relictoolkit.calculation.add_lj_parameters', side_effect=do_nothing)
 @mock.patch('relictoolkit.utils.process_frame', side_effect=do_nothing)
 def test_process_trajectory(*args):
-
     topology = os.path.dirname(__file__) + '/data/testtop.prmtop'
     mask1 = 'resid 3'
     mask2 = 'resid 4'
