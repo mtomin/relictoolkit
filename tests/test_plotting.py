@@ -28,6 +28,12 @@ def test_read_datafile():
 
     assert datapoints == {'x': [None], 'z': [None, -38.58544], 'y': [None, 692.0], 'step': 4500}
 
+    with open(os.path.dirname(__file__) + '/data/test_output.out') as data:
+        dt = int(data.readline().split()[-1])
+        datapoints = p.read_datafile(data, 0, 4500, 1, 692, 'frame_number', dt)
+
+    assert datapoints =={'z': [0.0, None, -38.58544], 'x': [0.0, None, 4500.0], 'step': 4500, 'y': [1.0, None, 692.0]}
+
 
 def test_generate_layout():
     test_layout = p.generate_layout('time')
@@ -84,6 +90,10 @@ def test_generate_figure_data_plotly(calculate_averages_mock, read_datafile_mock
     testfigure = p.generate_figure_data_plotly(os.path.dirname(__file__) + '/data/test_config_plot_temp.ini')
     assert testfigure['data'][0]['z'] == (0.0, None, -38.58544)
 
+    config.set('parameters', 'plot_type', 'frame_number')
+    with open(test_config_filename, 'w+') as f:
+        config.write(f)
+
     os.remove(os.path.dirname(__file__) + '/data/test_config_plot_temp.ini')
 
 
@@ -107,7 +117,6 @@ def test_generate_figure_data_mplt(calculate_averages_mock, read_datafile_mock):
     }
 
     testfigure = p.generate_figure_data_mplt(test_config_filename)
-    testfigure.show()
     assert testfigure.gca().lines[0].get_xdata()[1] == 1.0
     assert testfigure.gca().lines[0].get_ydata()[2] == 10.0
 
@@ -141,4 +150,4 @@ def test_plotting_main(generate_data_plotly, pyplot_figure_show_mock, generate_d
     assert pyplot_figure_show_mock.call_args[0][0] == 'config_plot.ini'
     assert load_from_plot_config_mock.call_args[0] == ('parameters', 'interactive', 'config_plot.ini')
 
-test_read_datafile()
+test_generate_figure_data_mplt()
