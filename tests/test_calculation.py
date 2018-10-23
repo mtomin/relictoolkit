@@ -45,7 +45,9 @@ def do_nothing(*args):
 
 @mock.patch('relictoolkit.calculation.add_lj_parameters', side_effect=do_nothing)
 @mock.patch('relictoolkit.utils.process_frame', side_effect=do_nothing)
-def test_process_trajectory(*args):
+@mock.patch('relictoolkit.utils.load_partial_traj')
+@mock.patch('relictoolkit.utils.load_from_config')
+def test_process_trajectory(mock_load_config, mock_load_partial_traj, mock_process_frame, mock_add_lj_parameters):
     topology = os.path.dirname(__file__) + '/data/testtop.prmtop'
     mask1 = 'resid 3'
     mask2 = 'resid 4'
@@ -58,20 +60,24 @@ def test_process_trajectory(*args):
     if os.path.isfile('relic_logfile.log'):
         os.remove('relic_logfile.log')
 
+    topology = os.path.dirname(__file__) + '/data/testtop.prmtop'
+    trajectory = os.path.dirname(__file__) + '/data/testtraj.xcrd'
+    system = MDAnalysis.Universe(topology, trajectory, format='mdcrd')
+    mock_load_config.return_value = ['output.dat']
+    mock_load_partial_traj.return_value = {'traj': system.trajectory,
+                                           'startframe': 0,
+                                           'endframe': 1}
     c.process_trajectory(topology, [os.path.dirname(__file__) + '/data/testtraj.mdcrd'], 2, 1, 1, mask1, mask2, 0)
     logfile = open('relic_logfile.log', 'r+')
-    log_line = logfile.readline()
-
-    assert log_line == 'Core 0 assigned frames 0 to 1\n'
     log_line = logfile.readline()
 
     assert log_line == 'Processing trajectory segment 0 frame 1 of 1\n'
     logfile.close()
     os.remove('relic_logfile.log')
     with open('output.dat_0', 'r+') as output:
-        next(output)
         output_line = output.readline()
-        assert output_line == 'Timestep: 2\n'
+
+    assert output_line == 'Frame #    Residue #     Eelec      Evdw       Etotal     Timestep: 2\n'
     os.remove('output.dat_0')
     os.remove(os.path.dirname(__file__) + '/data/testtraj.mdcrd')
 
@@ -108,3 +114,5 @@ def test_perform_analysis(*args):
         line = outfile.readline()
         assert line.split()[2] == '-1.26703'
     os.remove('output.dat')
+
+test_process_trajectory()

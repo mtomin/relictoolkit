@@ -93,9 +93,8 @@ def process_trajectory(topology, trajlist, dt, step, ncores, mask1, mask2, core)
 
     # Print output header
     if core == 0:
-        print('{:<9s}  {:<12s}  {:<10s} {:<10s} {:<10s}'.format(
-            'Frame #', 'Residue #', 'Eelec', 'Evdw', 'Etotal'), file=output)
-        print('Timestep: %s' % dt, file=output)
+        print('{:<9s}  {:<12s}  {:<10s} {:<10s} {:<10s} {:<10s}'.format(
+            'Frame #', 'Residue #', 'Eelec', 'Evdw', 'Etotal', 'Timestep: %s' % dt), file=output)
 
     for structure in partial_traj['traj']:
 

@@ -16,16 +16,17 @@ standard_library.install_aliases()
 
 def test_read_datafile():
     with open(os.path.dirname(__file__) + '/data/test_output.out') as data:
-        next(data)
-        dt = int(data.readline().split()[1])
+        dt = int(data.readline().split()[-1])
         datapoints = p.read_datafile(data, 0, 4500, 1, 692, 'time', dt)
-    assert datapoints == {'z': [0.0, None, -38.58544], 'y': [1.0, None, 692.0], 'step': 4500, 'x': [0.0, None, 2.25]}
+
+    assert datapoints == {'z': [0.0, None, -38.58544], 'y': [1.0, None, 692.0], 'step': 4500, 'x': [0.0, None, 9.0]}
 
     with open(os.path.dirname(__file__) + '/data/test_output.out') as data:
         next(data)
         dt = int(data.readline().split()[1])
         datapoints = p.read_datafile(data, 0, 4500, 1, 692, 'averages', dt)
-    assert datapoints == {'x': [None], 'z': [0.0, None, -38.58544], 'y': [1.0, None, 692.0], 'step': 4500}
+    print(datapoints)
+    assert datapoints == {'x': [None], 'z': [None, -38.58544], 'y': [None, 692.0], 'step': 4500}
 
 
 def test_generate_layout():
@@ -139,3 +140,5 @@ def test_plotting_main(generate_data_plotly, pyplot_figure_show_mock, generate_d
     p.main()
     assert pyplot_figure_show_mock.call_args[0][0] == 'config_plot.ini'
     assert load_from_plot_config_mock.call_args[0] == ('parameters', 'interactive', 'config_plot.ini')
+
+test_read_datafile()
