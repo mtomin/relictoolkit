@@ -169,7 +169,7 @@ def perform_analysis(config_filename='config.ini'):
     # Merge partial outputs
     with open('relic_logfile.log', 'a+') as logfile:
         logfile.write('Merging outputs...\n')
-    output = u.load_from_config('files', 'output')[0]
+    output = u.load_from_config('files', 'output', config_filename)[0]
     partial_outputs = glob.glob(output + '_*')
 
     # Sort files to avoid getting _1,12,13,..,19,2,21,..
