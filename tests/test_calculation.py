@@ -83,7 +83,7 @@ def test_process_trajectory(mock_load_config, mock_load_partial_traj, mock_proce
 
 
 @mock.patch('relictoolkit.utils.write_logfile_header', side_effect=do_nothing())
-@mock.patch('multiprocessing.Pool', side_effect=do_nothing())
+@mock.patch('relictoolkit.calculation.Pool', side_effect=do_nothing())
 def test_perform_analysis(*args):
     # Create a test config file
     test_config = ConfigParser()
@@ -97,7 +97,8 @@ def test_perform_analysis(*args):
         'mask2': 'resid 4',
         'stride': 1,
         'ncores': 1,
-        'dt': 2
+        'dt': 2,
+        'cutoff': 5
     }
 
     with open('testrun_config.ini', 'w+') as f:
@@ -108,11 +109,7 @@ def test_perform_analysis(*args):
 
     assert os.path.isfile('output.dat')
     assert not os.path.isfile('output.dat_0')
-    with open('output.dat') as outfile:
-        next(outfile)
-        next(outfile)
-        line = outfile.readline()
-        assert line.split()[2] == '-1.26703'
+    assert os.path.isfile('output.dat')
+    assert os.path.isfile('relic_logfile.log')
     os.remove('output.dat')
-
-test_process_trajectory()
+    os.remove('relic_logfile.log')
