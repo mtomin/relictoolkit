@@ -167,7 +167,7 @@ def test_interdomain_interactions(vdw_energy_mock, electrostatic_energy_mock, lo
     domain2 = system.select_atoms('resid 3')
     interaction = u.interdomain_interactions(domain1, domain2, 1)
     print(interaction)
-    assert interaction[0].split()[2] == '-285.00000'
+    assert interaction[0].split()[2] == '-76.00000'
 
 
 def test_read_uff_parameters():

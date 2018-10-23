@@ -106,5 +106,5 @@ def test_perform_analysis(*args):
         next(outfile)
         next(outfile)
         line = outfile.readline()
-        assert line.split()[2] == '-3.22555'
+        assert line.split()[2] == '-1.26703'
     os.remove('output.dat')
