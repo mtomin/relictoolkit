@@ -90,10 +90,17 @@ Enter the desired number of cores and hit run. The calculation time should not e
 	$ tail relic_logfile.log
 
 #### Plotting
-Upon selecting the output file obtained in the previous part of the tutorial, the settings pane appears. The default settings can be used (plot against time, include all frames and all residues). After hitting run, the graph is created and automatically opened.
+Upon selecting the output file obtained in the previous part of the tutorial, the settings pane appears. The default settings can be used (plot against time, include all frames and all residues). Currently RELIC includes two options for data plotting, [matplotlib](https://matplotlib.org/) (non-interactive) and [plotly](https://plot.ly/) (interactive).
+ 
+![tutorial](examples/plot_settings.png)
+
+After hitting run, the graph is created and automatically opened.
 The graph can be further customized using Plotly's [Chart studio](https://plot.ly/online-chart-maker/) or exported to png file using the action menu bar in the upper right corner.
 
-![tutorial](examples/tutorial_plot.png)
+Matplotlib                 |  Plotly
+:-------------------------:|:-------------------------:
+![tutorial](examples/matplotlib_plot.png)  |  ![tutorial](examples/plotly_plot.png)
+
 
 It can be observed that residues Glu3 and Lys9 contribute most to the interactions between the first and the second half of the peptide. Those interactions are beginning to form at around 1.9 ns, while at that time residues 2 and 4 formed destabilizing interactions, mostly with Lys9.
 
