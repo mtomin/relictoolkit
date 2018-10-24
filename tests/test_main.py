@@ -40,6 +40,7 @@ class TestPlot(ttk.Frame):
         self.endframe = r.TotalGui.EntryBox('Final frame (default last)', self)
         self.starting_residue = r.TotalGui.EntryBox('Starting residue (default 1)', self)
         self.end_residue = r.TotalGui.EntryBox('Final residue (default last)', self)
+        self.interactive = tk.StringVar()
 
         # Hide settings until the data file is selected
         self.startingframe.grid_remove()
@@ -155,7 +156,6 @@ def test_totalgui_plot():
     assert testplot.data.label.cget('text') == 'Select datafile'
 
 
-@classmethod
 def test_totalgui_plot_generate_settings_pane():
     testroot = tk.Tk()
     testplot = TestPlot(testroot)
@@ -165,6 +165,7 @@ def test_totalgui_plot_generate_settings_pane():
     assert testplot.plottype.get() == ''
     r.TotalGui.Plot.generate_settings_pane(testplot)
     assert testplot.plottype.get() == 'time'
+    assert testplot.interactive.get() == False
 
 
 def test_generate_config():
