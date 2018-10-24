@@ -131,7 +131,7 @@ def test_generate_figure_data_mplt(calculate_averages_mock, read_datafile_mock):
         config.write(f)
 
     testfigure = p.generate_figure_data_mplt(test_config_filename)
-    assert str(testfigure.get_axes()[0].get_children()[9]) == u'Text(0.5,0.92,\'Residue interactions\')'
+    assert testfigure.get_axes()[0].get_children()[9].get_text() == 'Residue interactions'
 
     os.remove(os.path.dirname(__file__) + '/data/test_config_plot_temp.ini')
 
@@ -154,5 +154,3 @@ def test_plotting_main(generate_data_plotly, pyplot_figure_show_mock, generate_d
     p.main()
     assert pyplot_figure_show_mock.call_args[0][0] == 'config_plot.ini'
     assert load_from_plot_config_mock.call_args[0] == ('parameters', 'interactive', 'config_plot.ini')
-
-test_generate_figure_data_mplt
