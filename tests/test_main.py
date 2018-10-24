@@ -159,11 +159,12 @@ def test_totalgui_plot():
 def test_totalgui_plot_generate_settings_pane():
     testroot = tk.Tk()
     testplot = TestPlot(testroot)
-    r.TotalGui.Plot.generate_settings_pane(testplot)
+    testgui=r.TotalGui
+    testgui.Plot.generate_settings_pane(testplot)
     assert testplot.plottype.get() == ''
     testplot.data.filename.set('randomfilename')
     assert testplot.plottype.get() == ''
-    r.TotalGui.Plot.generate_settings_pane(testplot)
+    testgui.Plot.generate_settings_pane(testplot)
     assert testplot.plottype.get() == 'time'
     assert testplot.interactive.get() == 'False'
 
