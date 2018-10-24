@@ -165,7 +165,7 @@ def test_totalgui_plot_generate_settings_pane():
     assert testplot.plottype.get() == ''
     r.TotalGui.Plot.generate_settings_pane(testplot)
     assert testplot.plottype.get() == 'time'
-    assert testplot.interactive.get() == False
+    assert testplot.interactive.get() == 'False'
 
 
 def test_generate_config():
