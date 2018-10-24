@@ -93,6 +93,8 @@ def test_generate_figure_data_plotly(calculate_averages_mock, read_datafile_mock
     config.set('parameters', 'plot_type', 'frame_number')
     with open(test_config_filename, 'w+') as f:
         config.write(f)
+    assert testfigure['data'][0]['z'] == (0.0, None, -38.58544)
+    assert testfigure['data'][0]['x'] == (0.0, None, 2.25)
 
     os.remove(os.path.dirname(__file__) + '/data/test_config_plot_temp.ini')
 
@@ -111,6 +113,10 @@ def test_generate_figure_data_mplt(calculate_averages_mock, read_datafile_mock):
     with open(test_config_filename, 'w+') as f:
         config.write(f)
 
+    read_datafile_mock.return_value = {
+        'z': [0.0, 15.0, None, 1.0, 16.0], 'y': [0.0, 1.0, None, 0.0, 1.0], 'step': 4500, 'x': [0.0, 0.0, None, 0.1, 0.1]
+    }
+
     calculate_averages_mock.return_value = {
         'residues': [0.0, 1.0, 2.0],
         'residue_energies': [0.0, 5.0, 10.0]
@@ -120,13 +126,12 @@ def test_generate_figure_data_mplt(calculate_averages_mock, read_datafile_mock):
     assert testfigure.gca().lines[0].get_xdata()[1] == 1.0
     assert testfigure.gca().lines[0].get_ydata()[2] == 10.0
 
-    config.set('parameters', 'plot_type', 'averages')
+    config.set('parameters', 'plot_type', 'time')
     with open(test_config_filename, 'w+') as f:
         config.write(f)
 
     testfigure = p.generate_figure_data_mplt(test_config_filename)
-    assert testfigure.gca().lines[0].get_xdata()[1] == 1.0
-    assert testfigure.gca().lines[0].get_ydata()[2] == 10.0
+    assert str(testfigure.get_axes()[0].get_children()[9]) == 'Text(0.5,0.92,\'Residue interactions\')'
 
     os.remove(os.path.dirname(__file__) + '/data/test_config_plot_temp.ini')
 
@@ -149,5 +154,3 @@ def test_plotting_main(generate_data_plotly, pyplot_figure_show_mock, generate_d
     p.main()
     assert pyplot_figure_show_mock.call_args[0][0] == 'config_plot.ini'
     assert load_from_plot_config_mock.call_args[0] == ('parameters', 'interactive', 'config_plot.ini')
-
-test_generate_figure_data_mplt()
