@@ -11,6 +11,7 @@ from configparser import ConfigParser
 import os
 import mock
 import shutil
+import multiprocessing
 standard_library.install_aliases()
 
 
@@ -106,24 +107,66 @@ def test_check_params():
     config_filename = os.path.dirname(__file__) + '/data/test_config_temp.ini'
     config.read(config_filename)
     assert u.check_params(config, config_filename) == 'Topology file missing!'
+
+    config.set('files', 'topology', os.path.dirname(__file__) + '/data/test_config.ini')
+    assert u.check_params(config, config_filename) ==\
+           'Topology parsing error! (If you are sure everything is in order try converting to another format)'
+
     config.set('files', 'topology', os.path.dirname(__file__) + '/data/testtop.prmtop')
+    assert u.check_params(config, config_filename) == 'One or more files missing!'
+
     config.set('files', 'trajectories', os.path.dirname(__file__) + '/data/testtraj.xcrd')
     assert u.check_params(config, config_filename) == ''
+
     config.set('parameters', 'mask1', 'klj')
     assert u.check_params(config, config_filename) == 'Mask1 error!'
+
     config.set('parameters', 'mask1', 'resid 1 and resid 2')
     assert u.check_params(config, config_filename) == 'Mask1 contains no atoms!'
+
     config.set('parameters', 'mask1', 'resid 1')
     config.set('parameters', 'mask2', 'klj')
     assert u.check_params(config, config_filename) == 'Mask2 error!'
+
     config.set('parameters', 'mask2', 'resid 1 and resid 2')
     assert u.check_params(config, config_filename) == 'Mask2 contains no atoms!'
+
     config.set('parameters', 'mask2', 'resid 2')
     config.set('parameters', 'ncores', '300')
     with open(config_filename, 'w+') as f:
         config.write(f)
     assert u.check_params(config, config_filename).split('(')[0] == \
            'Number of cores specified higher than available number of cores '
+
+    config.set('parameters', 'ncores', '1')
+    config.set('parameters', 'cutoff', 'a')
+    with open(config_filename, 'w+') as f:
+        config.write(f)
+    assert u.check_params(config, config_filename).split('(')[0] == 'Cutoff must be a number!'
+
+    config.set('parameters', 'ncores', 'a')
+    with open(config_filename, 'w+') as f:
+        config.write(f)
+    assert u.check_params(config, config_filename).split('(')[0] == 'Number of cores must be an integer!'
+
+    config.set('parameters', 'ncores', '1')
+    config.set('parameters', 'stride', 'a')
+    with open(config_filename, 'w+') as f:
+        config.write(f)
+    assert u.check_params(config, config_filename) == 'Stride must be an integer!'
+
+    config.set('parameters', 'stride', '1000')
+    config.set('parameters', 'dt', 'a')
+    with open(config_filename, 'w+') as f:
+        config.write(f)
+    assert u.check_params(config, config_filename) == 'Timestep must be an integer!'
+
+    if multiprocessing.cpu_count() > 1:
+        config.set('parameters', 'ncores', '2')
+        config.set('parameters', 'dt', '1')
+        with open(config_filename, 'w+') as f:
+            config.write(f)
+        assert u.check_params(config, config_filename) == 'Number of cores higher than number of frames!'
 
     os.remove(os.path.dirname(__file__) + '/data/test_config_temp.ini')
 
@@ -214,3 +257,5 @@ def test_tail():
         print('the end', file=testtail)
         assert u.tail(testtail)[0] == 'the end\n'
         os.remove('testtail.dat')
+
+test_check_params()
