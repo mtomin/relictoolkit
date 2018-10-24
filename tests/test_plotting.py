@@ -131,7 +131,7 @@ def test_generate_figure_data_mplt(calculate_averages_mock, read_datafile_mock):
         config.write(f)
 
     testfigure = p.generate_figure_data_mplt(test_config_filename)
-    assert str(testfigure.get_axes()[0].get_children()[9]) == 'Text(0.5,0.92,\'Residue interactions\')'
+    assert repr(testfigure.get_axes()[0].get_children()[9]) == 'Text(0.5,0.92,\'Residue interactions\')'
 
     os.remove(os.path.dirname(__file__) + '/data/test_config_plot_temp.ini')
 
