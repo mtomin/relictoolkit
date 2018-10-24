@@ -105,7 +105,7 @@ def check_params(settings, filename='config.ini'):
         if ncores > multiprocessing.cpu_count():
             error_message = 'Number of cores specified higher than available number of cores (%s)'\
                             % multiprocessing.cpu_count()
-        elif ncores > (number_frames_total // stride) +1:
+        elif ncores > (number_frames_total // stride) + 1:
                 error_message = 'Number of cores higher than number of frames!'
 
     if error_message == '':
@@ -263,7 +263,8 @@ def load_from_plot_config(section, parameter, filename='config_plot.ini'):
         'startframe': 0,
         'endframe': int(last_line[0].split()[0]),
         'starting_residue': 1,
-        'end_residue': int(last_line[0].split()[1])
+        'end_residue': int(last_line[0].split()[1]),
+        'dt': 1
     }
 
     try:
