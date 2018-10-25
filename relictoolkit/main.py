@@ -173,8 +173,8 @@ class TotalGui(object):
             # Create format selection
             possible_filetypes = ['Amber binary trajectory (.ncdf)', 'AMBER coordinates (.inpcrd)',
                                   'Amber trajectory (.mdcrd)', 'CHARMM/XPLOR/PSF (.psf)', 'DESRES (.dms)',
-                                  'GAMESS (.gms)', 'Gromacs trr (.trr)', 'Gromacs xtc (.xtc)', 'GROMOS96 (.gro)',
-                                  'GSD (.gsd)', 'HOOMD (.xml)', 'LAMMPS (.data)']
+                                  'GAMESS (.gms)', 'Gromacs trr (.trr)', 'Gromacs xtc (.xtc)', 'GSD (.gsd)',
+                                  'HOOMD (.xml)', 'LAMMPS (.data)']
 
             self.extension = TotalGui.DropDown('Filetype: ', possible_filetypes, self)
             self.extension.label.grid(row=3, column=1)
