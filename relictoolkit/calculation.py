@@ -173,8 +173,7 @@ def perform_analysis(config_filename='config.ini'):
     partial_outputs = glob.glob(output + '_*')
 
     # Sort files to avoid getting _1,12,13,..,19,2,21,..
-    partial_outputs.sort(key=lambda x: int(re.compile(r'_(\d).*').search(x).group()
-                                           [1:len(re.compile(r'_(\d).*').search(x).group())]))
+    partial_outputs.sort(key=lambda x: int(re.search(r'(_\d*$)', x).group()[1:len(re.search(r'(_\d*$)', x).group())]))
     with open(output, 'wb') as final_output:
         for partial_output in partial_outputs:
             with open(partial_output, 'rb') as current_output:
