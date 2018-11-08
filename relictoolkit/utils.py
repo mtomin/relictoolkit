@@ -52,7 +52,6 @@ def check_params(settings, filename='config.ini'):
     filename: str
         Name of the config file
     """
-
     error_message = ''
     topology = settings.get('files', 'topology')
     trajectories = settings.get('files', 'trajectories').split(', ')
@@ -60,6 +59,7 @@ def check_params(settings, filename='config.ini'):
     mask1 = settings.get('parameters', 'mask1')
     mask2 = settings.get('parameters', 'mask2')
     cutoff = settings.get('parameters', 'cutoff')
+    calculate_vdw = load_from_config('parameters', 'vdw')[0] == 'True'
 
     try:
         stride = int(load_from_config('parameters', 'stride', filename)[0])
@@ -131,6 +131,11 @@ def check_params(settings, filename='config.ini'):
                 cutoff = float(cutoff)
             except ValueError:
                 error_message = 'Cutoff must be a number!'
+    if error_message == '' and calculate_vdw:
+        try:
+            system.atoms[0].element == 'a'
+        except:
+            error_message = 'Van der Waals interactions not supported for this format!'
 
     return error_message
 

@@ -88,7 +88,13 @@ def process_trajectory(topology, trajlist, dt, step, ncores, mask1, mask2, core)
     partial_traj = u.load_partial_traj(input_system, step, ncores, core)
     domain1 = input_system.select_atoms(mask1, updating=True)
     domain2 = input_system.select_atoms(mask2, updating=True)
-    add_lj_parameters(input_system)
+    calculate_vdw = u.load_from_config('parameters', 'vdw') == 'True'
+    if calculate_vdw:
+        add_lj_parameters(input_system)
+    else:
+        input_system.add_TopologyAttr('lj_energy', values=[0]*len(input_system.atoms))
+        input_system.add_TopologyAttr('vdw_radius', values=[0] * len(input_system.atoms))
+
     output = open(u.load_from_config('files', 'output')[0] + '_' + str(core), 'w+')
 
     # Print output header
