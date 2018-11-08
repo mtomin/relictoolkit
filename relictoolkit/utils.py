@@ -376,7 +376,7 @@ def interdomain_interactions(domain1, domain2, frame_number):
     domain_interactions = list()
     calculate_vdw = load_from_config('parameters', 'vdw')[0] == 'True'
     for residue in domain1.residues:
-        if residue.resname != 'WAT':
+        if residue.resname != 'WAT' and residue.resname != 'SOL':
             neighbor_atoms = possible_neighbors.search(residue.atoms,
                                                        float(load_from_config('parameters', 'cutoff')[0]), level='A')
             eelec = 0
