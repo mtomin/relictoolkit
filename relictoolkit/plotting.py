@@ -71,6 +71,8 @@ def read_datafile(data, startframe, endframe, starting_residue, end_residue, plo
                       'step': step}
         return datapoints
 
+    # Sort by residue
+
     lista = list(zip(residue_data, time_data, energy_data))
     lista.sort()
     lista.append((0, 0, 0))
