@@ -27,7 +27,7 @@ def test_read_datafile():
         dt = int(data.readline().split()[1])
         datapoints = p.read_datafile(data, 0, 4500, 1, 692, 'averages', dt, 0)
 
-    assert datapoints == {'x': [None], 'z': [None, -38.58544, None], 'y': [None, 692.0, None], 'step': 4500}
+    assert datapoints == {'x': [], 'z': [-38.58544], 'y': [692.0], 'step': 4500}
 
     with open(os.path.dirname(__file__) + '/data/test_output.out') as data:
         dt = int(data.readline().split()[-1])
