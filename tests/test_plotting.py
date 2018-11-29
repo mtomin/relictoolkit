@@ -17,22 +17,22 @@ standard_library.install_aliases()
 def test_read_datafile():
     with open(os.path.dirname(__file__) + '/data/test_output.out') as data:
         dt = int(data.readline().split()[-1])
-        datapoints = p.read_datafile(data, 0, 4500, 1, 692, 'time', dt)
+        datapoints = p.read_datafile(data, 0, 4500, 1, 692, 'time', dt, 0)
 
     assert datapoints == {'z': [0.0, None, -38.58544], 'y': [1.0, None, 692.0], 'step': 4500, 'x': [0.0, None, 9.0]}
 
     with open(os.path.dirname(__file__) + '/data/test_output.out') as data:
         next(data)
         dt = int(data.readline().split()[1])
-        datapoints = p.read_datafile(data, 0, 4500, 1, 692, 'averages', dt)
+        datapoints = p.read_datafile(data, 0, 4500, 1, 692, 'averages', dt, 0)
 
     assert datapoints == {'x': [None], 'z': [None, -38.58544], 'y': [None, 692.0], 'step': 4500}
 
     with open(os.path.dirname(__file__) + '/data/test_output.out') as data:
         dt = int(data.readline().split()[-1])
-        datapoints = p.read_datafile(data, 0, 4500, 1, 692, 'frame_number', dt)
+        datapoints = p.read_datafile(data, 0, 4500, 1, 692, 'frame_number', dt, 0)
 
-    assert datapoints =={'z': [0.0, None, -38.58544], 'x': [0.0, None, 4500.0], 'step': 4500, 'y': [1.0, None, 692.0]}
+    assert datapoints == {'z': [0.0, None, -38.58544], 'x': [0.0, None, 4500.0], 'step': 4500, 'y': [1.0, None, 692.0]}
 
 
 def test_generate_layout():
