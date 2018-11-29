@@ -16,7 +16,7 @@ import numpy as np
 standard_library.install_aliases()
 
 
-def read_datafile(data, startframe, endframe, starting_residue, end_residue, plottype, dt):
+def read_datafile(data, startframe, endframe, starting_residue, end_residue, plottype, dt, range_of_values):
     """Parse the calculation output and return datapoints for plotting.
 
     Parameters
@@ -38,9 +38,9 @@ def read_datafile(data, startframe, endframe, starting_residue, end_residue, plo
     """
 
     frame = 0
-    x = list()
-    y = list()
-    z = list()
+    residue_data = list()
+    time_data = list()
+    energy_data = list()
     step = 1
     for line in data:
         current_frame = int(line.split()[0])
@@ -54,23 +54,58 @@ def read_datafile(data, startframe, endframe, starting_residue, end_residue, plo
             step = current_frame - frame
             frame += step
 
-            x.append(None)
-            y.append(None)
-            z.append(None)
-
         if plottype == 'time':
-            x.append(float(line.split()[0])*dt/1000)
+            time_data.append(float(line.split()[0])*dt/1000)
         elif plottype == 'frame_number':
-            x.append(float(line.split()[0]))
-        y.append(float(line.split()[1]))
-        z.append(float(line.split()[2]))
+            time_data.append(float(line.split()[0]))
+        residue_data.append(float(line.split()[1]))
+        energy_data.append(float(line.split()[2]))
 
         if frame > endframe:
             break
 
-    datapoints = {'x': x,
-                  'y': y,
-                  'z': z,
+    if plottype == 'averages':
+        datapoints = {'x': time_data,
+                      'y': residue_data,
+                      'z': energy_data,
+                      'step': step}
+        return datapoints
+
+    lista = list(zip(residue_data, time_data, energy_data))
+    lista.sort()
+    lista.append((0, 0, 0))
+    pre_filtered_residue_data = list()
+    pre_filtered_time_data = list()
+    pre_filtered_energy_data = list()
+
+    residue_data = list()
+    time_data = list()
+    energy_data = list()
+
+    for index, (res, time, energy) in enumerate(lista):
+
+        if index > 0:
+            if res != lista[index-1][0]:
+                if np.ptp(np.array(pre_filtered_energy_data)) >= range_of_values:
+                    residue_data.extend(pre_filtered_residue_data)
+                    time_data.extend(pre_filtered_time_data)
+                    energy_data.extend(pre_filtered_energy_data)
+
+                    residue_data.append(None)
+                    time_data.append(None)
+                    energy_data.append(None)
+
+                pre_filtered_residue_data = list()
+                pre_filtered_time_data = list()
+                pre_filtered_energy_data = list()
+
+        pre_filtered_residue_data.append(res)
+        pre_filtered_time_data.append(time)
+        pre_filtered_energy_data.append(energy)
+
+    datapoints = {'x': time_data,
+                  'y': residue_data,
+                  'z': energy_data,
                   'step': step}
 
     return datapoints
@@ -142,6 +177,7 @@ def generate_figure_data_plotly(config_filename):
     endframe = int(u.load_from_plot_config('parameters', 'endframe', config_filename))
     starting_residue = int(u.load_from_plot_config('parameters', 'starting_residue', config_filename))
     end_residue = int(u.load_from_plot_config('parameters', 'end_residue', config_filename))
+    range_of_values = float(u.load_from_plot_config('parameters', 'range_of_values', config_filename))
 
     data = open(filename)
 
@@ -150,7 +186,7 @@ def generate_figure_data_plotly(config_filename):
     # Read timestep from file
     dt = int(data.readline().split()[-1])
 
-    datapoints = read_datafile(data, startframe, endframe, starting_residue, end_residue, plottype, dt)
+    datapoints = read_datafile(data, startframe, endframe, starting_residue, end_residue, plottype, dt, range_of_values)
     data.close()
 
     x = datapoints['x']
@@ -196,13 +232,14 @@ def generate_figure_data_mplt(config_filename):
     endframe = int(u.load_from_plot_config('parameters', 'endframe', config_filename))
     starting_residue = int(u.load_from_plot_config('parameters', 'starting_residue', config_filename))
     end_residue = int(u.load_from_plot_config('parameters', 'end_residue', config_filename))
+    range_of_values = float(u.load_from_plot_config('parameters', 'range_of_values', config_filename))
 
     data = open(filename)
 
     # Read timestep from file
     dt = int(data.readline().split()[-1])
 
-    datapoints = read_datafile(data, startframe, endframe, starting_residue, end_residue, plottype, dt)
+    datapoints = read_datafile(data, startframe, endframe, starting_residue, end_residue, plottype, dt, range_of_values)
     data.close()
     fig = plt.figure(facecolor='w')
     mpl.rcParams['savefig.dpi'] = 1000
@@ -231,14 +268,14 @@ def generate_figure_data_mplt(config_filename):
                 ycrds.append(y)
                 zcrds.append(z)
             else:
-                xnew, ynew = np.meshgrid(xcrds, ycrds)
+                xnew, ynew = np.meshgrid(ycrds, xcrds)
                 znew = np.zeros((len(ycrds), len(xcrds)))
                 for i in range(len(zcrds)):
                     znew[i] = zcrds[i]
                 xcrds = list()
                 ycrds = list()
                 zcrds = list()
-                ax.plot_wireframe(xnew, ynew, znew, lw=0.25)
+                ax.plot_wireframe(ynew, xnew, znew, lw=0.25)
 
         # Add last plot
         xnew, ynew = np.meshgrid(xcrds, ycrds)

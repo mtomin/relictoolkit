@@ -155,6 +155,7 @@ def check_plot_params(settings, filename='config_plot.ini'):
     endframe = load_from_plot_config('parameters', 'endframe', filename)
     starting_residue = load_from_plot_config('parameters', 'starting_residue', filename)
     end_residue = load_from_plot_config('parameters', 'end_residue', filename)
+    range_of_values = load_from_plot_config('parameters', 'range_of_values', filename)
 
     # Check filename
     try:
@@ -203,6 +204,11 @@ def check_plot_params(settings, filename='config_plot.ini'):
         elif starting_residue > last_datafile_residue:
                 error_message = 'Starting residue larger than total number of residues (%d)' % last_datafile_residue
 
+    if error_message == '':
+        try:
+            range_of_values = float(range_of_values)
+        except ValueError:
+            error_message = 'Range of values must be a number!'
     return error_message
 
 
@@ -269,7 +275,8 @@ def load_from_plot_config(section, parameter, filename='config_plot.ini'):
         'endframe': int(last_line[0].split()[0]),
         'starting_residue': 1,
         'end_residue': int(last_line[0].split()[1]),
-        'dt': 1
+        'dt': 1,
+        'range_of_values': 0
     }
 
     try:

@@ -251,16 +251,19 @@ class TotalGui(object):
             self.endframe = TotalGui.EntryBox('Final frame (default last)', self)
             self.starting_residue = TotalGui.EntryBox('Starting residue (default 1)', self)
             self.end_residue = TotalGui.EntryBox('Final residue (default last)', self)
+            self.range_of_values = TotalGui.EntryBox('Show only residues with a range larger than (default 0)', self)
 
             # Hide settings until the data file is selected
             self.startingframe.grid_remove()
             self.endframe.grid_remove()
             self.starting_residue.grid_remove()
             self.end_residue.grid_remove()
+            self.range_of_values.grid_remove()
             self.startingframe.label.grid_remove()
             self.endframe.label.grid_remove()
             self.starting_residue.label.grid_remove()
             self.end_residue.label.grid_remove()
+            self.range_of_values.label.grid_remove()
 
         def generate_settings_pane(self, *args):
             """
@@ -321,6 +324,9 @@ class TotalGui(object):
 
                 self.end_residue.grid_configure(row=8, column=1)
                 self.end_residue.label.grid_configure(row=8, column=0)
+
+                self.range_of_values.grid_configure(row=9, column=1)
+                self.range_of_values.label.grid_configure(row=9, column=0)
 
                 # Create and set up Run and Quit buttons
                 run_plot = TotalGui.RunButton('Run', self)
@@ -464,7 +470,8 @@ def generate_plot_config(gui, config):
         'startframe': gui.startingframe.get(),
         'endframe': gui.endframe.get(),
         'starting_residue': gui.starting_residue.get(),
-        'end_residue': gui.end_residue.get()
+        'end_residue': gui.end_residue.get(),
+        'range_of_values': gui.range_of_values.get()
     }
 
     with open('config_plot.ini', 'w+') as configfile:
